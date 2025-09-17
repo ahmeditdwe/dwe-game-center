@@ -1,0 +1,3070 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dar Wa Emaar Game Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        :root {
+            --primary-color: #f36f2a;
+            --primary-dark: #d85a1a;
+            --bg-color: #f5f5f5;
+            --text-dark: #333;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --success: #4caf50;
+            --error: #f44336;
+            --warning: #ff9800;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-color) 0%, #e0e0e0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header-center {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0.5rem 0 0 0;
+            color: var(--text-dark);
+            font-size: 1.8rem;
+        }
+
+        .logo {
+            max-height: 120px;
+            width: auto;
+            display: block;
+        }
+
+        .lang-button-container {
+            display: flex;
+            align-items: center;
+        }
+
+        #langButton {
+            background-color: var(--primary-color);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        #langButton:hover {
+            background-color: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Login/Register Form */
+        .auth-container {
+            max-width: 400px;
+            margin: 3rem auto;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #757575;
+        }
+
+        .btn-secondary:hover {
+            background: #616161;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .user-info {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .game-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(243, 111, 42, 0.3);
+        }
+
+        .game-card.disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
+        }
+
+        .game-card.disabled:hover {
+            transform: none;
+            box-shadow: var(--shadow);
+        }
+
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .game-title {
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .coming-soon-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--warning);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .challenge-banner {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .challenge-banner h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .challenge-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .challenge-detail {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .challenge-detail-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+        }
+
+        .challenge-detail-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .days-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .challenge-completed {
+            background: linear-gradient(135deg, var(--success), #4caf50);
+        }
+
+        .challenge-completed .btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .challenge-completed .btn:hover {
+            transform: none;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .completion-time {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Game Area */
+        .game-area {
+            display: none;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-top: 2rem;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        /* Sudoku */
+        .sudoku-grid {
+            display: inline-block;
+            border: 3px solid var(--text-dark);
+            margin: 0 auto;
+            outline: none;
+            position: relative;
+        }
+        
+        .sudoku-grid:focus {
+            box-shadow: 0 0 10px rgba(243, 111, 42, 0.5);
+        }
+
+        .sudoku-row {
+            display: flex;
+        }
+
+        .sudoku-cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--white);
+            position: relative;
+        }
+
+        .sudoku-cell:hover:not(.prefilled) {
+            background: #f5f5f5;
+            transform: scale(1.05);
+        }
+
+        .sudoku-cell.selected {
+            background: rgba(243, 111, 42, 0.2) !important;
+            box-shadow: inset 0 0 0 2px var(--primary-color);
+            transform: scale(1.1);
+            z-index: 1;
+        }
+
+        .sudoku-cell.prefilled {
+            background: #e0e0e0;
+            color: var(--text-dark);
+            cursor: not-allowed;
+            font-weight: 700;
+        }
+
+        .sudoku-cell.error {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        .sudoku-cell:nth-child(3n) {
+            border-left: 3px solid var(--text-dark);
+        }
+
+        .sudoku-row:nth-child(3n) .sudoku-cell {
+            border-bottom: 3px solid var(--text-dark);
+        }
+
+        .sudoku-controls {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .number-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .number-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+        }
+
+        /* Tic Tac Toe */
+        .tictactoe-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 120px);
+            grid-gap: 10px;
+            justify-content: center;
+            margin: 2rem auto;
+        }
+
+        .tictactoe-cell {
+            width: 120px;
+            height: 120px;
+            background: var(--white);
+            border: 3px solid var(--primary-color);
+            font-size: 3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tictactoe-cell:hover {
+            background: rgba(243, 111, 42, 0.1);
+        }
+
+        /* Hangman */
+        .hangman-container {
+            text-align: center;
+        }
+
+        .hangman-word {
+            font-size: 3rem;
+            letter-spacing: 1rem;
+            margin: 2rem 0;
+            font-weight: 700;
+        }
+
+        .hangman-keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .letter-btn {
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .letter-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .hangman-drawing {
+            margin: 2rem 0;
+            font-size: 5rem;
+        }
+
+        .word-hint {
+            background: rgba(243, 111, 42, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem auto;
+            max-width: 500px;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            border: 2px solid var(--primary-color);
+        }
+
+        .no-words-message {
+            background: rgba(243, 111, 42, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem auto;
+            max-width: 500px;
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            border: 2px solid var(--primary-color);
+        }
+
+        /* Crossword */
+        .crossword-grid {
+            display: inline-block;
+            margin: 0 auto;
+        }
+
+        .crossword-row {
+            display: flex;
+        }
+
+        .crossword-cell {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .crossword-cell.black {
+            background: var(--text-dark);
+        }
+
+        .crossword-cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0;
+        }
+
+        .crossword-number {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            font-size: 0.7rem;
+            line-height: 1;
+        }
+
+        .crossword-clues {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Word Search Game */
+        .wordsearch-container {
+            text-align: center;
+        }
+
+        .wordsearch-grid {
+            display: inline-block;
+            margin: 2rem auto;
+            border: 2px solid var(--primary-color);
+            padding: 1rem;
+            background: var(--white);
+            border-radius: 10px;
+        }
+
+        .wordsearch-row {
+            display: flex;
+        }
+
+        .wordsearch-cell {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--white);
+            margin: 1px;
+            user-select: none;
+        }
+
+        .wordsearch-cell:hover {
+            background: rgba(243, 111, 42, 0.1);
+        }
+
+        .wordsearch-cell.selecting {
+            background: rgba(243, 111, 42, 0.3);
+            transform: scale(1.1);
+        }
+
+        .wordsearch-cell.found {
+            background: rgba(76, 175, 80, 0.3);
+            color: var(--success);
+        }
+
+        .wordsearch-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(243, 111, 42, 0.05);
+            border-radius: 10px;
+        }
+
+        .wordsearch-word-item {
+            padding: 0.5rem 1rem;
+            background: var(--white);
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .wordsearch-word-item.found {
+            background: var(--success);
+            color: var(--white);
+            text-decoration: line-through;
+        }
+
+        .wordsearch-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        .wordsearch-stat {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-top: 2rem;
+        }
+
+        .leaderboard table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .leaderboard th,
+        .leaderboard td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        [dir="ltr"] .leaderboard th,
+        [dir="ltr"] .leaderboard td {
+            text-align: left;
+        }
+
+        .leaderboard th {
+            background: var(--primary-color);
+            color: var(--white);
+            font-weight: 700;
+        }
+
+        .leaderboard tr:hover {
+            background: #f5f5f5;
+        }
+
+        /* Timer */
+        .timer {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            cursor: pointer;
+            color: #757575;
+            font-size: 2rem;
+        }
+
+        [dir="rtl"] .close-modal {
+            left: 1rem;
+            right: auto;
+        }
+
+        [dir="ltr"] .close-modal {
+            right: 1rem;
+            left: auto;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1); }
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+
+        .message.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .message.error {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .logo {
+                max-height: 80px;
+            }
+            
+            .header h1 {
+                font-size: 1.3rem;
+            }
+
+            .challenge-details {
+                grid-template-columns: 1fr;
+            }
+
+            .wordsearch-cell {
+                width: 25px;
+                height: 25px;
+                font-size: 0.9rem;
+            }
+        }
+    
+        /* Fix Clear button size */
+        .sudoku-controls .btn-clear {
+            min-width: 100px !important;
+            padding: 0.75rem 1.5rem !important;
+            font-size: 1rem !important;
+            display: inline-block !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="lang-button-container">
+                <button id="langButton" onclick="switchLanguage()">
+                    <span id="langText">English</span>
+                </button>
+            </div>
+            <div class="header-center">
+                <img id="companyLogo" class="logo" src="" alt="Dar Wa Emaar" style="display:none;">
+                <h1 data-ar="مركز ألعاب دار وإعمار" data-en="Dar Wa Emaar Game Center">مركز ألعاب دار وإعمار</h1>
+            </div>
+            <div style="width: 100px;"></div> <!-- Spacer for balance -->
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Login/Register Form -->
+        <div class="auth-container" id="authContainer">
+            <h2 id="authTitle" data-ar="تسجيل الدخول" data-en="Login">تسجيل الدخول</h2>
+            <div id="messageBox"></div>
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="employeeId" data-ar="رقم الموظف (8 أرقام)" data-en="Employee ID (8 digits)">رقم الموظف (8 أرقام)</label>
+                    <input type="text" id="employeeId" maxlength="8" pattern="[0-9]{8}" required>
+                </div>
+                <div class="form-group" id="passwordGroup">
+                    <label for="password" data-ar="كلمة المرور" data-en="Password">كلمة المرور</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div class="form-group" id="confirmPasswordGroup" style="display:none;">
+                    <label for="confirmPassword" data-ar="تأكيد كلمة المرور" data-en="Confirm Password">تأكيد كلمة المرور</label>
+                    <input type="password" id="confirmPassword">
+                </div>
+                <button type="submit" class="btn" style="width:100%;" data-ar="دخول" data-en="Enter">دخول</button>
+            </form>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="user-info">
+                <div>
+                    <h2><span data-ar="مرحباً" data-en="Welcome">مرحباً</span>، <span id="userName"></span></h2>
+                    <p><span data-ar="رقم الموظف" data-en="Employee ID">رقم الموظف</span>: <span id="userIdDisplay"></span></p>
+                    <p><span data-ar="القسم" data-en="Department">القسم</span>: <span id="userDepartment"></span></p>
+                </div>
+                <button class="btn btn-secondary" onclick="logout()" data-ar="تسجيل الخروج" data-en="Logout">تسجيل الخروج</button>
+            </div>
+
+            <!-- Challenge Banner -->
+            <div class="challenge-banner" id="challengeBanner" style="display:none;">
+                <h2 data-ar="🏆 تحدي دار وإعمار" data-en="🏆 DWE Challenge">🏆 تحدي دار وإعمار</h2>
+                <div class="challenge-details" id="challengeDetails"></div>
+                <button class="btn" id="challengeButton" style="background:white;color:var(--primary-color);margin-top:1rem;" onclick="playChallenge()" data-ar="ابدأ التحدي" data-en="Start Challenge">ابدأ التحدي</button>
+                <div id="challengeCompletionInfo" style="display:none;"></div>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="games-grid" id="gamesGrid">
+                <!-- Games will be loaded dynamically based on status -->
+            </div>
+
+            <!-- Game Area -->
+            <div class="game-area" id="gameArea"></div>
+
+            <!-- Leaderboard -->
+            <div class="leaderboard" id="leaderboard" style="display:none;">
+                <h2 data-ar="🏆 لوحة الصدارة" data-en="🏆 Leaderboard">🏆 لوحة الصدارة</h2>
+                <div id="leaderboardContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header" id="modalTitle"></div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { 
+            getFirestore, 
+            collection, 
+            doc, 
+            getDoc, 
+            setDoc, 
+            updateDoc, 
+            query, 
+            where, 
+            orderBy, 
+            limit, 
+            getDocs,
+            addDoc,
+            serverTimestamp 
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_hyXMW8qg1BwtJdykoo4XFLDoAwsXxGY",
+            authDomain: "dar-wa-emaar-game-center.firebaseapp.com",
+            projectId: "dar-wa-emaar-game-center",
+            storageBucket: "dar-wa-emaar-game-center.firebasestorage.app",
+            messagingSenderId: "788128481095",
+            appId: "1:788128481095:web:50c85945e619a69a9f5662",
+            measurementId: "G-LRBZ9QLMZ2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.db = db;
+        window.firestore = {
+            collection,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            query,
+            where,
+            orderBy,
+            limit,
+            getDocs,
+            addDoc,
+            serverTimestamp
+        };
+
+        // Load company logo
+        loadCompanyLogo();
+        // Load game words
+        loadGameWords();
+        // Load games status
+        loadGamesStatus();
+    </script>
+
+    <script>
+        let currentUser = null;
+        let currentGame = null;
+        let gameTimer = null;
+        let gameStartTime = null;
+        let challengeData = null;
+        let challengeCompletionData = null;
+        let gameIsComplete = false;
+        let resultSaved = false;
+        let gameWords = { hangman: [], crossword: [], wordsearch: [] };
+        let gamesStatus = {};
+
+        // Language Switcher
+        let isArabic = true;
+        
+        function switchLanguage() {
+            isArabic = !isArabic;
+            const html = document.getElementById('htmlRoot');
+            const langText = document.getElementById('langText');
+            
+            if (isArabic) {
+                html.dir = 'rtl';
+                html.lang = 'ar';
+                langText.textContent = 'English';
+                updateTexts('ar');
+            } else {
+                html.dir = 'ltr';
+                html.lang = 'en';
+                langText.textContent = 'عربي';
+                updateTexts('en');
+            }
+            
+            // Reload games grid with new language
+            if (currentUser) {
+                renderGamesGrid();
+                // Reload challenge with new language
+                if (challengeData) {
+                    checkActiveChallenge();
+                }
+            }
+            
+            // Show success message
+            const message = document.createElement('div');
+            message.style.cssText = `
+                position: fixed;
+                top: 80px;
+                ${isArabic ? 'right' : 'left'}: 20px;
+                background-color: #4caf50;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 5px;
+                font-size: 16px;
+                font-weight: bold;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-family: 'Cairo', sans-serif;
+            `;
+            message.textContent = isArabic ? '✔ تم التبديل إلى العربية' : '✔ Switched to English';
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transition = 'opacity 0.3s';
+                setTimeout(() => message.remove(), 300);
+            }, 2000);
+        }
+        
+        function updateTexts(lang) {
+            // Update all elements with data-ar and data-en attributes
+            document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+                el.textContent = el.getAttribute(`data-${lang}`);
+            });
+        }
+
+        // Load company logo from Firebase
+        async function loadCompanyLogo() {
+            try {
+                const settingsDoc = await window.firestore.getDoc(
+                    window.firestore.doc(window.db, 'settings', 'company')
+                );
+                if (settingsDoc.exists()) {
+                    const data = settingsDoc.data();
+                    if (data.logo) {
+                        document.getElementById('companyLogo').src = data.logo;
+                        document.getElementById('companyLogo').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading logo:', error);
+            }
+        }
+
+        // Load games status from Firebase
+        async function loadGamesStatus() {
+            try {
+                const gamesDoc = await window.firestore.getDoc(
+                    window.firestore.doc(window.db, 'settings', 'games')
+                );
+                
+                if (gamesDoc.exists()) {
+                    const data = gamesDoc.data();
+                    gamesStatus = {
+                        sudoku: data.sudoku || { active: true },
+                        tictactoe: data.tictactoe || { active: true },
+                        hangman: data.hangman || { active: true },
+                        crossword: data.crossword || { active: true },
+                        wordsearch: data.wordsearch || { active: true }
+                    };
+                } else {
+                    // Default all games to active if no settings found
+                    gamesStatus = {
+                        sudoku: { active: true },
+                        tictactoe: { active: true },
+                        hangman: { active: true },
+                        crossword: { active: true },
+                        wordsearch: { active: true }
+                    };
+                }
+                
+                // Render games grid if user is logged in
+                if (currentUser) {
+                    renderGamesGrid();
+                }
+            } catch (error) {
+                console.error('Error loading games status:', error);
+                // Default all games to active on error
+                gamesStatus = {
+                    sudoku: { active: true },
+                    tictactoe: { active: true },
+                    hangman: { active: true },
+                    crossword: { active: true },
+                    wordsearch: { active: true }
+                };
+            }
+        }
+
+        // Render games grid based on status
+        function renderGamesGrid() {
+            const gamesGrid = document.getElementById('gamesGrid');
+            const lang = document.getElementById('htmlRoot').lang;
+            
+            const games = [
+                {
+                    id: 'sudoku',
+                    icon: '🔢',
+                    nameAr: 'سودوكو',
+                    nameEn: 'Sudoku',
+                    descAr: 'اللعبة الرئيسية الجديدة',
+                    descEn: 'The new main game'
+                },
+                {
+                    id: 'tictactoe',
+                    icon: '⭕',
+                    nameAr: 'إكس أو',
+                    nameEn: 'Tic Tac Toe',
+                    descAr: 'العب ضد صديق أو الكمبيوتر',
+                    descEn: 'Play against friend or computer'
+                },
+                {
+                    id: 'hangman',
+                    icon: '📝',
+                    nameAr: 'الرجل المشنوق',
+                    nameEn: 'Hangman',
+                    descAr: 'احزر الكلمة',
+                    descEn: 'Guess the word'
+                },
+                {
+                    id: 'crossword',
+                    icon: '📰',
+                    nameAr: 'الكلمات المتقاطعة',
+                    nameEn: 'Crossword',
+                    descAr: 'حل الألغاز',
+                    descEn: 'Solve puzzles'
+                },
+                {
+                    id: 'wordsearch',
+                    icon: '🔍',
+                    nameAr: 'البحث عن الكلمات',
+                    nameEn: 'Word Search',
+                    descAr: 'ابحث عن الكلمات المخفية',
+                    descEn: 'Find hidden words'
+                }
+            ];
+            
+            gamesGrid.innerHTML = '';
+            
+            games.forEach(game => {
+                const gameCard = document.createElement('div');
+                const isActive = gamesStatus[game.id]?.active !== false;
+                
+                if (isActive) {
+                    gameCard.className = 'game-card';
+                    gameCard.onclick = () => startGame(game.id);
+                    gameCard.innerHTML = `
+                        <div class="game-icon">${game.icon}</div>
+                        <div class="game-title">${lang === 'ar' ? game.nameAr : game.nameEn}</div>
+                        <p>${lang === 'ar' ? game.descAr : game.descEn}</p>
+                    `;
+                } else {
+                    gameCard.className = 'game-card disabled';
+                    const hint = gamesStatus[game.id]?.hint || (lang === 'ar' ? 'لعبة جديدة قادمة' : 'New game coming');
+                    gameCard.innerHTML = `
+                        <span class="coming-soon-badge">${lang === 'ar' ? 'قريباً' : 'Coming Soon'}</span>
+                        <div class="game-icon">🔒</div>
+                        <div class="game-title">${lang === 'ar' ? 'قريباً' : 'Coming Soon'}</div>
+                        <p>${hint}</p>
+                    `;
+                }
+                
+                gamesGrid.appendChild(gameCard);
+            });
+        }
+
+        // Load game words from Firebase
+        async function loadGameWords() {
+            try {
+                // Load hangman words
+                const hangmanSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'hangmanWords')
+                );
+                gameWords.hangman = [];
+                hangmanSnapshot.forEach(doc => {
+                    gameWords.hangman.push(doc.data());
+                });
+
+                // Load crossword puzzles
+                const crosswordSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'crosswordPuzzles')
+                );
+                gameWords.crossword = [];
+                crosswordSnapshot.forEach(doc => {
+                    gameWords.crossword.push(doc.data());
+                });
+                
+                // Load word search words
+                const wordsearchSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'wordsearchWords')
+                );
+                gameWords.wordsearch = [];
+                wordsearchSnapshot.forEach(doc => {
+                    gameWords.wordsearch.push(doc.data());
+                });
+                
+                console.log('Loaded game words:', {
+                    hangman: gameWords.hangman.length,
+                    crossword: gameWords.crossword.length,
+                    wordsearch: gameWords.wordsearch.length
+                });
+            } catch (error) {
+                console.error('Error loading game words:', error);
+            }
+        }
+
+        // Check for active challenge
+        async function checkActiveChallenge() {
+            try {
+                const now = new Date();
+                const challengesQuery = window.firestore.query(
+                    window.firestore.collection(window.db, 'challenges'),
+                    window.firestore.where('endDate', '>', now.toISOString())
+                );
+                const snapshot = await window.firestore.getDocs(challengesQuery);
+                
+                if (!snapshot.empty) {
+                    const challenge = snapshot.docs[0].data();
+                    challenge.id = snapshot.docs[0].id;
+                    
+                    if (new Date(challenge.startDate) <= now) {
+                        challengeData = challenge;
+                        
+                        // Check if user has already completed this challenge
+                        const completed = await checkIfPlayedChallenge();
+                        if (completed) {
+                            displayCompletedChallenge();
+                        } else {
+                            displayActiveChallenge();
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking challenge:', error);
+            }
+        }
+
+        // Display active challenge
+        function displayActiveChallenge() {
+            const banner = document.getElementById('challengeBanner');
+            banner.style.display = 'block';
+            banner.className = 'challenge-banner';
+            
+            const lang = document.getElementById('htmlRoot').lang;
+            const now = new Date();
+            const endDate = new Date(challengeData.endDate);
+            const daysRemaining = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+            
+            const gameNames = {
+                ar: {
+                    'sudoku': 'سودوكو',
+                    'tictactoe': 'إكس أو',
+                    'hangman': 'الرجل المشنوق',
+                    'crossword': 'الكلمات المتقاطعة',
+                    'wordsearch': 'البحث عن الكلمات'
+                },
+                en: {
+                    'sudoku': 'Sudoku',
+                    'tictactoe': 'Tic Tac Toe',
+                    'hangman': 'Hangman',
+                    'crossword': 'Crossword',
+                    'wordsearch': 'Word Search'
+                }
+            };
+            
+            const difficulties = {
+                ar: {
+                    'easy': 'سهل',
+                    'medium': 'متوسط',
+                    'hard': 'صعب',
+                    'expert': 'خبير'
+                },
+                en: {
+                    'easy': 'Easy',
+                    'medium': 'Medium',
+                    'hard': 'Hard',
+                    'expert': 'Expert'
+                }
+            };
+            
+            const detailsDiv = document.getElementById('challengeDetails');
+            detailsDiv.innerHTML = `
+                <div class="challenge-detail">
+                    <div class="challenge-detail-label">${lang === 'ar' ? 'اللعبة' : 'Game'}</div>
+                    <div class="challenge-detail-value">${gameNames[lang][challengeData.game]}</div>
+                </div>
+                <div class="challenge-detail">
+                    <div class="challenge-detail-label">${lang === 'ar' ? 'الصعوبة' : 'Difficulty'}</div>
+                    <div class="challenge-detail-value">${difficulties[lang][challengeData.difficulty]}</div>
+                </div>
+                <div class="challenge-detail">
+                    <div class="challenge-detail-label">${lang === 'ar' ? 'ينتهي في' : 'Ends on'}</div>
+                    <div class="challenge-detail-value">${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                </div>
+                <div class="challenge-detail">
+                    <div class="challenge-detail-label">${lang === 'ar' ? 'الوقت المتبقي' : 'Time Remaining'}</div>
+                    <div class="challenge-detail-value">
+                        <span class="days-badge">${daysRemaining} ${lang === 'ar' ? (daysRemaining === 1 ? 'يوم' : 'أيام') : (daysRemaining === 1 ? 'day' : 'days')}</span>
+                    </div>
+                </div>
+            `;
+            
+            if (challengeData.description) {
+                detailsDiv.innerHTML += `
+                    <div class="challenge-detail" style="grid-column: 1/-1;">
+                        <div class="challenge-detail-label">${lang === 'ar' ? 'الوصف' : 'Description'}</div>
+                        <div class="challenge-detail-value" style="font-size: 1rem; font-weight: 400;">${challengeData.description}</div>
+                    </div>
+                `;
+            }
+            
+            // Update button text and make it clickable
+            const button = document.getElementById('challengeButton');
+            button.disabled = false;
+            button.onclick = playChallenge;
+            button.textContent = lang === 'ar' ? 'ابدأ التحدي' : 'Start Challenge';
+            
+            // Hide completion info
+            document.getElementById('challengeCompletionInfo').style.display = 'none';
+        }
+
+        // Display completed challenge
+        async function displayCompletedChallenge() {
+            const banner = document.getElementById('challengeBanner');
+            banner.style.display = 'block';
+            banner.className = 'challenge-banner challenge-completed';
+            
+            const lang = document.getElementById('htmlRoot').lang;
+            
+            // Get user's completion data
+            const participationQuery = window.firestore.query(
+                window.firestore.collection(window.db, 'gameResults'),
+                window.firestore.where('challengeId', '==', challengeData.id),
+                window.firestore.where('employeeId', '==', currentUser.id)
+            );
+            const snapshot = await window.firestore.getDocs(participationQuery);
+            
+            let completionTime = null;
+            if (!snapshot.empty) {
+                completionTime = snapshot.docs[0].data().time;
+            }
+            
+            const gameNames = {
+                ar: {
+                    'sudoku': 'سودوكو',
+                    'tictactoe': 'إكس أو',
+                    'hangman': 'الرجل المشنوق',
+                    'crossword': 'الكلمات المتقاطعة',
+                    'wordsearch': 'البحث عن الكلمات'
+                },
+                en: {
+                    'sudoku': 'Sudoku',
+                    'tictactoe': 'Tic Tac Toe',
+                    'hangman': 'Hangman',
+                    'crossword': 'Crossword',
+                    'wordsearch': 'Word Search'
+                }
+            };
+            
+            const detailsDiv = document.getElementById('challengeDetails');
+            detailsDiv.innerHTML = `
+                <div class="challenge-detail">
+                    <div class="challenge-detail-label">${lang === 'ar' ? 'اللعبة' : 'Game'}</div>
+                    <div class="challenge-detail-value">${gameNames[lang][challengeData.game]}</div>
+                </div>
+                <div class="challenge-detail">
+                    <div class="challenge-detail-label">${lang === 'ar' ? 'الحالة' : 'Status'}</div>
+                    <div class="challenge-detail-value">✅ ${lang === 'ar' ? 'مكتمل' : 'Completed'}</div>
+                </div>
+            `;
+            
+            // Show completion info
+            const completionInfo = document.getElementById('challengeCompletionInfo');
+            completionInfo.style.display = 'block';
+            completionInfo.innerHTML = `
+                <div class="completion-time">
+                    🎉 ${lang === 'ar' ? 'تهانينا! لقد أكملت التحدي' : 'Congratulations! You completed the challenge'}
+                    ${completionTime ? `<br>${lang === 'ar' ? 'وقتك:' : 'Your time:'} ${formatTime(completionTime)}` : ''}
+                </div>
+            `;
+            
+            // Update button to show completed state
+            const button = document.getElementById('challengeButton');
+            button.disabled = true;
+            button.onclick = null;
+            button.textContent = lang === 'ar' ? '✔ تم إكمال التحدي' : '✔ Challenge Completed';
+            button.style.cursor = 'not-allowed';
+        }
+
+        // Auth form handler
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const employeeId = document.getElementById('employeeId').value;
+            const password = document.getElementById('password').value;
+            
+            if (employeeId.length !== 8 || !/^\d{8}$/.test(employeeId)) {
+                const lang = document.getElementById('htmlRoot').lang;
+                showMessage(lang === 'ar' ? 'رقم الموظف يجب أن يكون 8 أرقام' : 'Employee ID must be 8 digits', 'error');
+                return;
+            }
+
+            showLoading(true);
+
+            try {
+                const employeeDoc = await window.firestore.getDoc(
+                    window.firestore.doc(window.db, 'employees', employeeId)
+                );
+
+                if (!employeeDoc.exists()) {
+                    const lang = document.getElementById('htmlRoot').lang;
+                    showMessage(lang === 'ar' ? 'رقم الموظف غير موجود' : 'Employee ID not found', 'error');
+                    showLoading(false);
+                    return;
+                }
+
+                const employeeData = employeeDoc.data();
+
+                if (!employeeData.password) {
+                    // First time - register password
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    
+                    if (!confirmPassword) {
+                        const lang = document.getElementById('htmlRoot').lang;
+                        document.getElementById('authTitle').textContent = lang === 'ar' ? 'تسجيل كلمة مرور جديدة' : 'Register New Password';
+                        document.getElementById('confirmPasswordGroup').style.display = 'block';
+                        showLoading(false);
+                        return;
+                    }
+
+                    if (password !== confirmPassword) {
+                        const lang = document.getElementById('htmlRoot').lang;
+                        showMessage(lang === 'ar' ? 'كلمات المرور غير متطابقة' : 'Passwords do not match', 'error');
+                        showLoading(false);
+                        return;
+                    }
+
+                    // Save password
+                    await window.firestore.updateDoc(
+                        window.firestore.doc(window.db, 'employees', employeeId),
+                        { password: btoa(password) }
+                    );
+
+                    currentUser = { ...employeeData, id: employeeId };
+                    loginSuccess();
+                } else {
+                    // Check password
+                    if (btoa(password) !== employeeData.password) {
+                        const lang = document.getElementById('htmlRoot').lang;
+                        showMessage(lang === 'ar' ? 'كلمة المرور غير صحيحة' : 'Wrong password', 'error');
+                        showLoading(false);
+                        return;
+                    }
+
+                    currentUser = { ...employeeData, id: employeeId };
+                    loginSuccess();
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                const lang = document.getElementById('htmlRoot').lang;
+                showMessage(lang === 'ar' ? 'حدث خطأ في النظام' : 'System error occurred', 'error');
+                showLoading(false);
+            }
+        });
+
+        function loginSuccess() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            const lang = document.getElementById('htmlRoot').lang;
+            document.getElementById('userName').textContent = currentUser.name || (lang === 'ar' ? 'موظف' : 'Employee');
+            document.getElementById('userIdDisplay').textContent = currentUser.id;
+            document.getElementById('userDepartment').textContent = currentUser.department || (lang === 'ar' ? 'غير محدد' : 'Not defined');
+            
+            renderGamesGrid();
+            checkActiveChallenge();
+            showLoading(false);
+        }
+
+        function logout() {
+            currentUser = null;
+            currentGame = null;
+            challengeData = null;
+            challengeCompletionData = null;
+            document.getElementById('authContainer').style.display = 'block';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('authForm').reset();
+            document.getElementById('confirmPasswordGroup').style.display = 'none';
+            document.getElementById('challengeBanner').style.display = 'none';
+            const lang = document.getElementById('htmlRoot').lang;
+            document.getElementById('authTitle').textContent = lang === 'ar' ? 'تسجيل الدخول' : 'Login';
+        }
+
+        function showMessage(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.className = `message ${type}`;
+            messageBox.textContent = message;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'flex' : 'none';
+        }
+
+        function startGame(gameType) {
+            // Check if game is active
+            if (gamesStatus[gameType]?.active === false) {
+                const lang = document.getElementById('htmlRoot').lang;
+                showModal(
+                    lang === 'ar' ? 'قريباً' : 'Coming Soon',
+                    lang === 'ar' ? 'هذه اللعبة ستكون متاحة قريباً!' : 'This game will be available soon!'
+                );
+                return;
+            }
+            
+            currentGame = gameType;
+            gameIsComplete = false;
+            resultSaved = false;
+            const gameArea = document.getElementById('gameArea');
+            gameArea.style.display = 'block';
+            gameStartTime = Date.now();
+            startTimer();
+            
+            switch(gameType) {
+                case 'sudoku':
+                    initSudoku();
+                    break;
+                case 'tictactoe':
+                    initTicTacToe();
+                    break;
+                case 'hangman':
+                    initHangman();
+                    break;
+                case 'crossword':
+                    initCrossword();
+                    break;
+                case 'wordsearch':
+                    initWordSearch();
+                    break;
+            }
+            
+            gameArea.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function playChallenge() {
+            if (!challengeData) return;
+            
+            // Check if game is active
+            if (gamesStatus[challengeData.game]?.active === false) {
+                const lang = document.getElementById('htmlRoot').lang;
+                showModal(
+                    lang === 'ar' ? 'اللعبة غير متاحة' : 'Game Not Available',
+                    lang === 'ar' ? 'لعبة التحدي غير متاحة حالياً' : 'The challenge game is not currently available'
+                );
+                return;
+            }
+            
+            checkIfPlayedChallenge().then(played => {
+                if (played) {
+                    const lang = document.getElementById('htmlRoot').lang;
+                    showChallengeCompletedModal();
+                    return;
+                }
+                
+                currentGame = challengeData.game;
+                gameIsComplete = false;
+                resultSaved = false;
+                const gameArea = document.getElementById('gameArea');
+                gameArea.style.display = 'block';
+                gameStartTime = Date.now();
+                startTimer();
+                
+                switch(challengeData.game) {
+                    case 'sudoku':
+                        initSudoku(challengeData.difficulty);
+                        break;
+                    case 'tictactoe':
+                        initTicTacToe();
+                        break;
+                    case 'hangman':
+                        initHangman();
+                        break;
+                    case 'crossword':
+                        initCrossword();
+                        break;
+                    case 'wordsearch':
+                        initWordSearch();
+                        break;
+                }
+                
+                gameArea.scrollIntoView({ behavior: 'smooth' });
+            });
+        }
+
+        function showChallengeCompletedModal() {
+            const lang = document.getElementById('htmlRoot').lang;
+            const modalContent = `
+                <div style="text-align: center;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
+                    <h3>${lang === 'ar' ? 'تهانينا!' : 'Congratulations!'}</h3>
+                    <p style="margin: 1rem 0;">${lang === 'ar' ? 'لقد أكملت هذا التحدي بالفعل!' : 'You have already completed this challenge!'}</p>
+                    <p style="color: var(--primary-color); font-weight: 600;">${lang === 'ar' ? 'سيتم إعلامك إذا فزت!' : 'You will get notified if you won!'}</p>
+                    <div style="margin-top: 2rem;">
+                        <button class="btn" onclick="closeModal()" style="margin: 0.5rem;">
+                            ${lang === 'ar' ? '🏠 القائمة الرئيسية' : '🏠 Main Menu'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            showModal(lang === 'ar' ? 'تحدي مكتمل' : 'Challenge Completed', modalContent);
+        }
+
+        async function checkIfPlayedChallenge() {
+            try {
+                const participationQuery = window.firestore.query(
+                    window.firestore.collection(window.db, 'gameResults'),
+                    window.firestore.where('challengeId', '==', challengeData.id),
+                    window.firestore.where('employeeId', '==', currentUser.id)
+                );
+                const snapshot = await window.firestore.getDocs(participationQuery);
+                return !snapshot.empty;
+            } catch (error) {
+                console.error('Error checking participation:', error);
+                return false;
+            }
+        }
+
+        function startTimer() {
+            let seconds = 0;
+            clearInterval(gameTimer);
+            gameTimer = setInterval(() => {
+                seconds++;
+                const minutes = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                const timerElement = document.getElementById('gameTimer');
+                if (timerElement) {
+                    timerElement.textContent = 
+                        `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(gameTimer);
+            return Date.now() - gameStartTime;
+        }
+
+        // Sudoku Game
+        function initSudoku(difficulty = 'medium') {
+            const lang = document.getElementById('htmlRoot').lang;
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <h2>${lang === 'ar' ? 'سودوكو' : 'Sudoku'}</h2>
+                    <div class="timer">${lang === 'ar' ? 'الوقت' : 'Time'}: <span id="gameTimer">00:00</span></div>
+                </div>
+                <div style="text-align: center;">
+                    <div class="sudoku-grid" id="sudokuGrid" tabindex="0"></div>
+                    <div class="sudoku-controls">
+                        <div class="number-buttons" id="sudokuNumberButtons">
+                            ${[1,2,3,4,5,6,7,8,9].map(n => 
+                                `<button class="btn number-btn" onclick="sudokuInput(${n})">${n}</button>`
+                            ).join('')}
+                            <button class="btn number-btn btn-secondary" onclick="sudokuInput(0)">&#128465;</button>
+                        </div>
+                        <div style="margin-top: 1rem;" id="sudokuControlButtons">
+                            <button class="btn" onclick="checkSudoku()">${lang === 'ar' ? 'تحقق' : 'Check'}</button>
+                            <button class="btn btn-secondary" onclick="newSudoku()">${lang === 'ar' ? 'لعبة جديدة' : 'New Game'}</button>
+                            <button class="btn btn-secondary" onclick="closeGame()">${lang === 'ar' ? 'إغلاق' : 'Close'}</button>
+                        </div>
+                        <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                            ${lang === 'ar' 
+                                ? 'لوحة المفاتيح: الأسهم للتنقل • 1-9 للملء • 0/Delete للمسح • Tab للتالي'
+                                : 'Keyboard: ↑↓←→ to move • 1-9 to fill • 0/Del to clear • Tab for next'}
+                        </div>
+                        <div id="keyIndicator" style="margin-top: 0.5rem; font-size: 1.2rem; color: var(--primary-color); height: 30px;"></div>
+                    </div>
+                </div>
+            `;
+            
+            generateSudoku(difficulty);
+            
+            const grid = document.getElementById('sudokuGrid');
+            grid.addEventListener('keydown', handleSudokuKeyboard);
+        }
+
+        function disableGameControls() {
+            const numberButtons = document.querySelectorAll('#sudokuNumberButtons button');
+            numberButtons.forEach(btn => btn.disabled = true);
+            
+            const checkBtn = document.querySelector('#sudokuControlButtons button:first-child');
+            if (checkBtn) checkBtn.disabled = true;
+        }
+
+        let sudokuSolution = [];
+        let sudokuPuzzle = [];
+        let selectedCell = null;
+
+        function generateSudoku(difficulty) {
+            sudokuSolution = generateCompleteSudoku();
+            sudokuPuzzle = JSON.parse(JSON.stringify(sudokuSolution));
+            
+            const cellsToRemove = {
+                'easy': 30,
+                'medium': 40,
+                'hard': 50,
+                'expert': 60
+            }[difficulty] || 40;
+            
+            const positions = [];
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    positions.push([i, j]);
+                }
+            }
+            
+            for (let i = positions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [positions[i], positions[j]] = [positions[j], positions[i]];
+            }
+            
+            for (let i = 0; i < cellsToRemove; i++) {
+                const [row, col] = positions[i];
+                sudokuPuzzle[row][col] = 0;
+            }
+            
+            renderSudoku();
+        }
+
+        function generateCompleteSudoku() {
+            const grid = Array(9).fill().map(() => Array(9).fill(0));
+            
+            for (let box = 0; box < 9; box += 3) {
+                const nums = [1,2,3,4,5,6,7,8,9].sort(() => Math.random() - 0.5);
+                let idx = 0;
+                for (let i = box; i < box + 3; i++) {
+                    for (let j = box; j < box + 3; j++) {
+                        grid[i][j] = nums[idx++];
+                    }
+                }
+            }
+            
+            solveSudoku(grid);
+            return grid;
+        }
+
+        function solveSudoku(grid) {
+            const findEmpty = () => {
+                for (let i = 0; i < 9; i++) {
+                    for (let j = 0; j < 9; j++) {
+                        if (grid[i][j] === 0) return [i, j];
+                    }
+                }
+                return null;
+            };
+            
+            const isValid = (num, pos) => {
+                const [row, col] = pos;
+                
+                for (let j = 0; j < 9; j++) {
+                    if (grid[row][j] === num && j !== col) return false;
+                }
+                
+                for (let i = 0; i < 9; i++) {
+                    if (grid[i][col] === num && i !== row) return false;
+                }
+                
+                const boxRow = Math.floor(row / 3) * 3;
+                const boxCol = Math.floor(col / 3) * 3;
+                for (let i = boxRow; i < boxRow + 3; i++) {
+                    for (let j = boxCol; j < boxCol + 3; j++) {
+                        if (grid[i][j] === num && i !== row && j !== col) return false;
+                    }
+                }
+                
+                return true;
+            };
+            
+            const pos = findEmpty();
+            if (!pos) return true;
+            
+            const [row, col] = pos;
+            const numbers = [1,2,3,4,5,6,7,8,9].sort(() => Math.random() - 0.5);
+            
+            for (let num of numbers) {
+                if (isValid(num, [row, col])) {
+                    grid[row][col] = num;
+                    if (solveSudoku(grid)) return true;
+                    grid[row][col] = 0;
+                }
+            }
+            
+            return false;
+        }
+
+        function renderSudoku() {
+            const grid = document.getElementById('sudokuGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 9; i++) {
+                const row = document.createElement('div');
+                row.className = 'sudoku-row';
+                
+                for (let j = 0; j < 9; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'sudoku-cell';
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    
+                    if (sudokuPuzzle[i][j] !== 0) {
+                        cell.textContent = sudokuPuzzle[i][j];
+                        cell.classList.add('prefilled');
+                    } else {
+                        cell.onclick = () => {
+                            selectSudokuCell(i, j);
+                            document.getElementById('sudokuGrid').focus();
+                        };
+                    }
+                    
+                    row.appendChild(cell);
+                }
+                
+                grid.appendChild(row);
+            }
+            
+            setTimeout(() => {
+                grid.focus();
+                for (let i = 0; i < 9; i++) {
+                    for (let j = 0; j < 9; j++) {
+                        if (sudokuPuzzle[i][j] === 0) {
+                            selectSudokuCell(i, j);
+                            return;
+                        }
+                    }
+                }
+            }, 100);
+        }
+
+        function selectSudokuCell(row, col) {
+            const targetCell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            if (targetCell && targetCell.classList.contains('prefilled')) {
+                return;
+            }
+            
+            document.querySelectorAll('.sudoku-cell.selected').forEach(cell => {
+                cell.classList.remove('selected');
+            });
+            
+            selectedCell = { row, col };
+            if (targetCell) {
+                targetCell.classList.add('selected');
+                document.getElementById('sudokuGrid').focus();
+            }
+        }
+
+        function sudokuInput(num) {
+            if (gameIsComplete) {
+                return;
+            }
+            
+            if (!selectedCell) {
+                for (let i = 0; i < 9; i++) {
+                    for (let j = 0; j < 9; j++) {
+                        if (sudokuPuzzle[i][j] === 0) {
+                            selectSudokuCell(i, j);
+                            break;
+                        }
+                    }
+                    if (selectedCell) break;
+                }
+                if (!selectedCell) return;
+            }
+            
+            const { row, col } = selectedCell;
+            const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            
+            if (!cell || cell.classList.contains('prefilled')) return;
+            
+            const keyIndicator = document.getElementById('keyIndicator');
+            const lang = document.getElementById('htmlRoot').lang;
+            if (keyIndicator) {
+                if (num === 0) {
+                    keyIndicator.textContent = lang === 'ar' ? '✗ تم المسح' : '✗ Cleared';
+                } else {
+                    keyIndicator.textContent = `✔ ${num}`;
+                }
+                keyIndicator.style.animation = 'fadeIn 0.5s ease';
+                setTimeout(() => {
+                    if (keyIndicator) keyIndicator.textContent = '';
+                }, 1000);
+            }
+            
+            if (num === 0) {
+                sudokuPuzzle[row][col] = 0;
+                cell.textContent = '';
+                cell.classList.remove('error');
+                cell.style.animation = 'fadeIn 0.3s ease';
+            } else {
+                sudokuPuzzle[row][col] = num;
+                cell.textContent = num;
+                
+                cell.style.animation = '';
+                void cell.offsetWidth;
+                cell.style.animation = 'pop 0.3s ease';
+                
+                if (num !== sudokuSolution[row][col]) {
+                    cell.classList.add('error');
+                    setTimeout(() => {
+                        cell.style.animation = 'shake 0.3s ease';
+                    }, 300);
+                } else {
+                    cell.classList.remove('error');
+                    cell.style.background = 'rgba(76, 175, 80, 0.2)';
+                    setTimeout(() => {
+                        if (cell.classList.contains('selected')) {
+                            cell.style.background = '';
+                        }
+                    }, 500);
+                }
+            }
+        }
+
+        function handleSudokuKeyboard(e) {
+            if (gameIsComplete) {
+                e.preventDefault();
+                return;
+            }
+            
+            if (!selectedCell) {
+                for (let i = 0; i < 9; i++) {
+                    for (let j = 0; j < 9; j++) {
+                        if (sudokuPuzzle[i][j] === 0) {
+                            selectSudokuCell(i, j);
+                            break;
+                        }
+                    }
+                    if (selectedCell) break;
+                }
+                if (!selectedCell) return;
+            }
+
+            const { row, col } = selectedCell;
+            const isArabic = document.getElementById('htmlRoot').lang === 'ar';
+            
+            switch(e.key) {
+                case 'ArrowUp':
+                    e.preventDefault();
+                    for (let i = row - 1; i >= 0; i--) {
+                        const cell = document.querySelector(`[data-row="${i}"][data-col="${col}"]`);
+                        if (cell && !cell.classList.contains('prefilled')) {
+                            selectSudokuCell(i, col);
+                            break;
+                        }
+                    }
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    for (let i = row + 1; i < 9; i++) {
+                        const cell = document.querySelector(`[data-row="${i}"][data-col="${col}"]`);
+                        if (cell && !cell.classList.contains('prefilled')) {
+                            selectSudokuCell(i, col);
+                            break;
+                        }
+                    }
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    if (isArabic) {
+                        for (let j = col + 1; j < 9; j++) {
+                            const cell = document.querySelector(`[data-row="${row}"][data-col="${j}"]`);
+                            if (cell && !cell.classList.contains('prefilled')) {
+                                selectSudokuCell(row, j);
+                                break;
+                            }
+                        }
+                    } else {
+                        for (let j = col - 1; j >= 0; j--) {
+                            const cell = document.querySelector(`[data-row="${row}"][data-col="${j}"]`);
+                            if (cell && !cell.classList.contains('prefilled')) {
+                                selectSudokuCell(row, j);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    if (isArabic) {
+                        for (let j = col - 1; j >= 0; j--) {
+                            const cell = document.querySelector(`[data-row="${row}"][data-col="${j}"]`);
+                            if (cell && !cell.classList.contains('prefilled')) {
+                                selectSudokuCell(row, j);
+                                break;
+                            }
+                        }
+                    } else {
+                        for (let j = col + 1; j < 9; j++) {
+                            const cell = document.querySelector(`[data-row="${row}"][data-col="${j}"]`);
+                            if (cell && !cell.classList.contains('prefilled')) {
+                                selectSudokuCell(row, j);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                case '1': case '2': case '3': case '4': case '5':
+                case '6': case '7': case '8': case '9':
+                    e.preventDefault();
+                    sudokuInput(parseInt(e.key));
+                    break;
+                case '0': case 'Delete': case 'Backspace':
+                    e.preventDefault();
+                    sudokuInput(0);
+                    break;
+                case 'Tab':
+                    e.preventDefault();
+                    let found = false;
+                    for (let i = row; i < 9 && !found; i++) {
+                        for (let j = (i === row ? col + 1 : 0); j < 9; j++) {
+                            if (sudokuPuzzle[i][j] === 0) {
+                                selectSudokuCell(i, j);
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!found) {
+                        for (let i = 0; i <= row && !found; i++) {
+                            for (let j = 0; j < (i === row ? col : 9); j++) {
+                                if (sudokuPuzzle[i][j] === 0) {
+                                    selectSudokuCell(i, j);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+
+        function checkSudoku() {
+            if (gameIsComplete) {
+                return;
+            }
+            
+            let isComplete = true;
+            let hasErrors = false;
+            
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    if (sudokuPuzzle[i][j] === 0) {
+                        isComplete = false;
+                    } else if (sudokuPuzzle[i][j] !== sudokuSolution[i][j]) {
+                        hasErrors = true;
+                    }
+                }
+            }
+            
+            const lang = document.getElementById('htmlRoot').lang;
+            
+            if (isComplete && !hasErrors) {
+                const time = stopTimer();
+                gameIsComplete = true;
+                saveGameResult('sudoku', 'completed', time);
+                
+                disableGameControls();
+                
+                const title = lang === 'ar' ? 'تهانينا!' : 'Congratulations!';
+                const message = lang === 'ar' 
+                    ? `لقد أكملت السودوكو بنجاح في ${formatTime(time)}`
+                    : `You completed Sudoku successfully in ${formatTime(time)}`;
+                    
+                showGameEndModal(title, message, 'sudoku');
+            } else if (hasErrors) {
+                showModal(lang === 'ar' ? 'خطأ' : 'Error', 
+                         lang === 'ar' ? 'يوجد أخطاء في الحل، تحقق من الأرقام المميزة باللون الأحمر' : 'There are errors in the solution, check the numbers marked in red');
+            } else {
+                showModal(lang === 'ar' ? 'غير مكتمل' : 'Incomplete', 
+                         lang === 'ar' ? 'اللغز غير مكتمل بعد' : 'The puzzle is not complete yet');
+            }
+        }
+
+        function newSudoku() {
+            gameIsComplete = false;
+            resultSaved = false;
+            generateSudoku('medium');
+            gameStartTime = Date.now();
+            startTimer();
+        }
+
+        // Tic Tac Toe Game
+        function initTicTacToe() {
+            const lang = document.getElementById('htmlRoot').lang;
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <h2>${lang === 'ar' ? 'إكس أو' : 'Tic Tac Toe'}</h2>
+                    <div class="timer">${lang === 'ar' ? 'الوقت' : 'Time'}: <span id="gameTimer">00:00</span></div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="margin-bottom: 2rem;">
+                        <button class="btn" onclick="playTicTacToe('computer')">${lang === 'ar' ? 'العب ضد الكمبيوتر' : 'Play vs Computer'}</button>
+                        <button class="btn" onclick="playTicTacToe('friend')">${lang === 'ar' ? 'العب ضد صديق' : 'Play vs Friend'}</button>
+                    </div>
+                    <div class="tictactoe-grid" id="tictactoeGrid"></div>
+                    <div style="margin-top: 2rem;">
+                        <h3 id="tictactoeStatus">${lang === 'ar' ? 'اختر نوع اللعبة' : 'Choose game type'}</h3>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-secondary" onclick="resetTicTacToe()">${lang === 'ar' ? 'لعبة جديدة' : 'New Game'}</button>
+                        <button class="btn btn-secondary" onclick="closeGame()">${lang === 'ar' ? 'إغلاق' : 'Close'}</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let tictactoeBoard = [];
+        let tictactoeMode = '';
+        let currentPlayer = 'X';
+        let gameActive = false;
+
+        function playTicTacToe(mode) {
+            tictactoeMode = mode;
+            tictactoeBoard = Array(9).fill('');
+            currentPlayer = 'X';
+            gameActive = true;
+            gameIsComplete = false;
+            resultSaved = false;
+            renderTicTacToe();
+            const lang = document.getElementById('htmlRoot').lang;
+            if (mode === 'computer') {
+                document.getElementById('tictactoeStatus').textContent = lang === 'ar' ? 'دورك (X)' : 'Your turn (X)';
+            } else {
+                document.getElementById('tictactoeStatus').textContent = lang === 'ar' ? 'دور اللاعب X' : "Player X's turn";
+            }
+        }
+
+        function renderTicTacToe() {
+            const grid = document.getElementById('tictactoeGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'tictactoe-cell';
+                cell.onclick = () => makeTicTacToeMove(i);
+                cell.textContent = tictactoeBoard[i];
+                grid.appendChild(cell);
+            }
+        }
+
+        function makeTicTacToeMove(index) {
+            if (!gameActive || tictactoeBoard[index] !== '' || gameIsComplete) return;
+            
+            tictactoeBoard[index] = currentPlayer;
+            renderTicTacToe();
+            
+            if (checkTicTacToeWinner()) {
+                gameActive = false;
+                gameIsComplete = true;
+                const time = stopTimer();
+                const lang = document.getElementById('htmlRoot').lang;
+                const winnerText = lang === 'ar' ? `الفائز: ${currentPlayer}` : `Winner: ${currentPlayer}`;
+                saveGameResult('tictactoe', `winner_${currentPlayer}`, time);
+                
+                showGameEndModal(winnerText, '', 'tictactoe');
+                return;
+            }
+            
+            if (!tictactoeBoard.includes('')) {
+                gameActive = false;
+                gameIsComplete = true;
+                const lang = document.getElementById('htmlRoot').lang;
+                const drawText = lang === 'ar' ? 'تعادل!' : 'Draw!';
+                saveGameResult('tictactoe', 'draw', Date.now() - gameStartTime);
+                
+                showGameEndModal(drawText, '', 'tictactoe');
+                return;
+            }
+            
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            
+            if (tictactoeMode === 'computer' && currentPlayer === 'O') {
+                const lang = document.getElementById('htmlRoot').lang;
+                document.getElementById('tictactoeStatus').textContent = lang === 'ar' ? 'دور الكمبيوتر...' : "Computer's turn...";
+                setTimeout(() => {
+                    computerMove();
+                }, 500);
+            } else if (tictactoeMode === 'friend') {
+                const lang = document.getElementById('htmlRoot').lang;
+                document.getElementById('tictactoeStatus').textContent = lang === 'ar' ? `دور اللاعب ${currentPlayer}` : `Player ${currentPlayer}'s turn`;
+            }
+        }
+
+        function computerMove() {
+            if (gameIsComplete) return;
+            
+            const availableMoves = [];
+            for (let i = 0; i < 9; i++) {
+                if (tictactoeBoard[i] === '') availableMoves.push(i);
+            }
+            
+            if (availableMoves.length === 0) return;
+            
+            const move = getBestMove() || availableMoves[Math.floor(Math.random() * availableMoves.length)];
+            tictactoeBoard[move] = 'O';
+            renderTicTacToe();
+            
+            if (checkTicTacToeWinner()) {
+                gameActive = false;
+                gameIsComplete = true;
+                const time = stopTimer();
+                const lang = document.getElementById('htmlRoot').lang;
+                const lostText = lang === 'ar' ? 'الكمبيوتر فاز!' : 'Computer Won!';
+                saveGameResult('tictactoe', 'winner_O', time);
+                
+                showGameEndModal(lostText, '', 'tictactoe');
+                return;
+            }
+            
+            if (!tictactoeBoard.includes('')) {
+                gameActive = false;
+                gameIsComplete = true;
+                const lang = document.getElementById('htmlRoot').lang;
+                const drawText = lang === 'ar' ? 'تعادل!' : 'Draw!';
+                saveGameResult('tictactoe', 'draw', Date.now() - gameStartTime);
+                
+                showGameEndModal(drawText, '', 'tictactoe');
+                return;
+            }
+            
+            currentPlayer = 'X';
+            const lang = document.getElementById('htmlRoot').lang;
+            document.getElementById('tictactoeStatus').textContent = lang === 'ar' ? 'دورك (X)' : 'Your turn (X)';
+        }
+
+        function getBestMove() {
+            const winPatterns = [
+                [0,1,2], [3,4,5], [6,7,8],
+                [0,3,6], [1,4,7], [2,5,8],
+                [0,4,8], [2,4,6]
+            ];
+            
+            for (let pattern of winPatterns) {
+                const [a,b,c] = pattern;
+                if (tictactoeBoard[a] === 'O' && tictactoeBoard[b] === 'O' && tictactoeBoard[c] === '') return c;
+                if (tictactoeBoard[a] === 'O' && tictactoeBoard[c] === 'O' && tictactoeBoard[b] === '') return b;
+                if (tictactoeBoard[b] === 'O' && tictactoeBoard[c] === 'O' && tictactoeBoard[a] === '') return a;
+            }
+            
+            for (let pattern of winPatterns) {
+                const [a,b,c] = pattern;
+                if (tictactoeBoard[a] === 'X' && tictactoeBoard[b] === 'X' && tictactoeBoard[c] === '') return c;
+                if (tictactoeBoard[a] === 'X' && tictactoeBoard[c] === 'X' && tictactoeBoard[b] === '') return b;
+                if (tictactoeBoard[b] === 'X' && tictactoeBoard[c] === 'X' && tictactoeBoard[a] === '') return a;
+            }
+            
+            if (tictactoeBoard[4] === '') return 4;
+            
+            return null;
+        }
+
+        function checkTicTacToeWinner() {
+            const winPatterns = [
+                [0,1,2], [3,4,5], [6,7,8],
+                [0,3,6], [1,4,7], [2,5,8],
+                [0,4,8], [2,4,6]
+            ];
+            
+            for (let pattern of winPatterns) {
+                const [a,b,c] = pattern;
+                if (tictactoeBoard[a] && 
+                    tictactoeBoard[a] === tictactoeBoard[b] && 
+                    tictactoeBoard[a] === tictactoeBoard[c]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function resetTicTacToe() {
+            if (tictactoeMode) {
+                playTicTacToe(tictactoeMode);
+                gameStartTime = Date.now();
+                startTimer();
+            }
+        }
+
+        // Hangman Game
+        function initHangman() {
+            const lang = document.getElementById('htmlRoot').lang;
+            const gameArea = document.getElementById('gameArea');
+            
+            // Check if we have words
+            if (!gameWords.hangman || gameWords.hangman.length === 0) {
+                gameArea.innerHTML = `
+                    <div class="game-header">
+                        <h2>${lang === 'ar' ? 'الرجل المشنوق' : 'Hangman'}</h2>
+                    </div>
+                    <div class="no-words-message">
+                        <p>${lang === 'ar' ? 'لا توجد كلمات متاحة حالياً' : 'No words available currently'}</p>
+                        <p>${lang === 'ar' ? 'يرجى مطالبة المدير بإضافة كلمات للعبة' : 'Please ask the admin to add words for the game'}</p>
+                        <button class="btn btn-secondary" onclick="closeGame()" style="margin-top: 1rem;">
+                            ${lang === 'ar' ? 'إغلاق' : 'Close'}
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <h2>${lang === 'ar' ? 'الرجل المشنوق' : 'Hangman'}</h2>
+                    <div class="timer">${lang === 'ar' ? 'الوقت' : 'Time'}: <span id="gameTimer">00:00</span></div>
+                </div>
+                <div class="hangman-container">
+                    <div class="hangman-drawing" id="hangmanDrawing">😊</div>
+                    <div class="word-hint" id="wordHint"></div>
+                    <div class="hangman-word" id="hangmanWord"></div>
+                    <div class="hangman-keyboard" id="hangmanKeyboard"></div>
+                    <div style="margin-top: 2rem;">
+                        <button class="btn" onclick="newHangman()">${lang === 'ar' ? 'كلمة جديدة' : 'New Word'}</button>
+                        <button class="btn btn-secondary" onclick="closeGame()">${lang === 'ar' ? 'إغلاق' : 'Close'}</button>
+                    </div>
+                </div>
+            `;
+            
+            startHangman();
+        }
+
+        let hangmanWord = '';
+        let hangmanHint = '';
+        let guessedLetters = [];
+        let wrongGuesses = 0;
+
+        function startHangman() {
+            const lang = document.getElementById('htmlRoot').lang;
+            
+            // Use words from database
+            if (gameWords.hangman && gameWords.hangman.length > 0) {
+                const wordData = gameWords.hangman[Math.floor(Math.random() * gameWords.hangman.length)];
+                hangmanWord = lang === 'ar' ? wordData.wordAr : wordData.wordEn;
+                hangmanHint = lang === 'ar' ? wordData.hintAr : wordData.hintEn;
+            } else {
+                // No words available - shouldn't reach here due to check in initHangman
+                return;
+            }
+            
+            guessedLetters = [];
+            wrongGuesses = 0;
+            renderHangman();
+        }
+
+        function guessLetter(letter) {
+            if (gameIsComplete) return;
+            
+            guessedLetters.push(letter);
+            if (!hangmanWord.includes(letter)) {
+                wrongGuesses++;
+            }
+            renderHangman();
+        }
+
+        function renderHangman() {
+            const lang = document.getElementById('htmlRoot').lang;
+            
+            // Show hint
+            document.getElementById('wordHint').innerHTML = `<strong>${lang === 'ar' ? 'تلميح' : 'Hint'}:</strong> ${hangmanHint}`;
+            
+            // Render word
+            const wordDisplay = hangmanWord.split('').map(letter => 
+                guessedLetters.includes(letter) ? letter : '_'
+            ).join(' ');
+            document.getElementById('hangmanWord').textContent = wordDisplay;
+            
+            // Render keyboard
+            const keyboard = document.getElementById('hangmanKeyboard');
+            keyboard.innerHTML = '';
+            
+            const letters = lang === 'ar' ? 
+                'ابتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('') :
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            
+            letters.forEach(letter => {
+                const btn = document.createElement('button');
+                btn.className = 'btn letter-btn';
+                btn.textContent = letter;
+                btn.disabled = guessedLetters.includes(letter) || gameIsComplete;
+                btn.onclick = () => guessLetter(letter);
+                keyboard.appendChild(btn);
+            });
+            
+            // Update drawing
+            const stages = ['😊', '😐', '😟', '😰', '😱', '💀'];
+            document.getElementById('hangmanDrawing').textContent = stages[Math.min(wrongGuesses, 5)];
+            
+            // Check win/lose
+            if (!wordDisplay.includes('_')) {
+                gameIsComplete = true;
+                const time = stopTimer();
+                const winText = lang === 'ar' ? 'تهانينا!' : 'Congratulations!';
+                const message = lang === 'ar' ? `لقد حللت الكلمة "${hangmanWord}" بنجاح!` : `You solved the word "${hangmanWord}" successfully!`;
+                saveGameResult('hangman', 'won', time);
+                showGameEndModal(winText, message, 'hangman');
+            } else if (wrongGuesses >= 6) {
+                gameIsComplete = true;
+                const loseText = lang === 'ar' ? 'انتهت اللعبة' : 'Game Over';
+                const message = lang === 'ar' ? `الكلمة كانت: ${hangmanWord}` : `The word was: ${hangmanWord}`;
+                saveGameResult('hangman', 'lost', Date.now() - gameStartTime);
+                showGameEndModal(loseText, message, 'hangman');
+            }
+        }
+
+        function newHangman() {
+            gameIsComplete = false;
+            resultSaved = false;
+            startHangman();
+            gameStartTime = Date.now();
+            startTimer();
+        }
+
+        // Crossword Game
+        function initCrossword() {
+            const lang = document.getElementById('htmlRoot').lang;
+            const gameArea = document.getElementById('gameArea');
+            
+            // Check if we have puzzles
+            if (!gameWords.crossword || gameWords.crossword.length === 0) {
+                gameArea.innerHTML = `
+                    <div class="game-header">
+                        <h2>${lang === 'ar' ? 'الكلمات المتقاطعة' : 'Crossword'}</h2>
+                    </div>
+                    <div class="no-words-message">
+                        <p>${lang === 'ar' ? 'لا توجد ألغاز متاحة حالياً' : 'No puzzles available currently'}</p>
+                        <p>${lang === 'ar' ? 'يرجى مطالبة المدير بإضافة ألغاز للعبة' : 'Please ask the admin to add puzzles for the game'}</p>
+                        <button class="btn btn-secondary" onclick="closeGame()" style="margin-top: 1rem;">
+                            ${lang === 'ar' ? 'إغلاق' : 'Close'}
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <h2>${lang === 'ar' ? 'الكلمات المتقاطعة' : 'Crossword'}</h2>
+                    <div class="timer">${lang === 'ar' ? 'الوقت' : 'Time'}: <span id="gameTimer">00:00</span></div>
+                </div>
+                <div style="text-align: center;">
+                    <div class="crossword-grid" id="crosswordGrid"></div>
+                    <div class="crossword-clues">
+                        <div>
+                            <h3>${lang === 'ar' ? 'أفقي' : 'Across'}</h3>
+                            <div id="acrossClues"></div>
+                        </div>
+                        <div>
+                            <h3>${lang === 'ar' ? 'عمودي' : 'Down'}</h3>
+                            <div id="downClues"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 2rem;">
+                        <button class="btn" onclick="checkCrossword()">${lang === 'ar' ? 'تحقق' : 'Check'}</button>
+                        <button class="btn btn-secondary" onclick="newCrossword()">${lang === 'ar' ? 'لغز جديد' : 'New Puzzle'}</button>
+                        <button class="btn btn-secondary" onclick="closeGame()">${lang === 'ar' ? 'إغلاق' : 'Close'}</button>
+                    </div>
+                </div>
+            `;
+            
+            generateCrossword();
+        }
+
+        function generateCrossword() {
+            const lang = document.getElementById('htmlRoot').lang;
+            const grid = document.getElementById('crosswordGrid');
+            grid.innerHTML = '';
+            
+            // Use crossword from database
+            if (gameWords.crossword && gameWords.crossword.length > 0) {
+                const puzzle = gameWords.crossword[Math.floor(Math.random() * gameWords.crossword.length)];
+                
+                // Parse grid
+                const gridLines = puzzle.grid.split('\n');
+                const height = gridLines.length;
+                const width = gridLines[0] ? gridLines[0].length : 0;
+                
+                for (let i = 0; i < height; i++) {
+                    const row = document.createElement('div');
+                    row.className = 'crossword-row';
+                    
+                    for (let j = 0; j < width; j++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'crossword-cell';
+                        
+                        const char = gridLines[i] ? gridLines[i][j] : '#';
+                        if (char === '#') {
+                            cell.classList.add('black');
+                        } else {
+                            const input = document.createElement('input');
+                            input.type = 'text';
+                            input.maxLength = 1;
+                            input.dataset.answer = char;
+                            input.oninput = function() {
+                                if (gameIsComplete) {
+                                    this.value = '';
+                                }
+                            };
+                            cell.appendChild(input);
+                        }
+                        
+                        row.appendChild(cell);
+                    }
+                    
+                    grid.appendChild(row);
+                }
+                
+                // Add clues
+                const acrossClues = lang === 'ar' ? puzzle.acrossCluesAr : puzzle.acrossCluesEn;
+                const downClues = lang === 'ar' ? puzzle.downCluesAr : puzzle.downCluesEn;
+                
+                document.getElementById('acrossClues').innerHTML = acrossClues.map((clue, i) => 
+                    `<p>${i + 1}. ${clue}</p>`
+                ).join('');
+                
+                document.getElementById('downClues').innerHTML = downClues.map((clue, i) => 
+                    `<p>${i + 1}. ${clue}</p>`
+                ).join('');
+                
+            } else {
+                // No puzzles available - shouldn't reach here due to check in initCrossword
+                return;
+            }
+        }
+
+        function checkCrossword() {
+            if (gameIsComplete) return;
+            
+            const inputs = document.querySelectorAll('.crossword-cell input');
+            let correct = true;
+            
+            inputs.forEach(input => {
+                if (input.value.toUpperCase() !== input.dataset.answer) {
+                    correct = false;
+                    input.style.background = 'rgba(244, 67, 54, 0.1)';
+                } else {
+                    input.style.background = 'rgba(76, 175, 80, 0.1)';
+                }
+            });
+            
+            const lang = document.getElementById('htmlRoot').lang;
+            
+            if (correct) {
+                gameIsComplete = true;
+                const time = stopTimer();
+                const winText = lang === 'ar' ? 'تهانينا!' : 'Congratulations!';
+                const message = lang === 'ar' ? `لقد حللت اللغز بنجاح في ${formatTime(time)}` : `You solved the puzzle successfully in ${formatTime(time)}`;
+                saveGameResult('crossword', 'completed', time);
+                showGameEndModal(winText, message, 'crossword');
+            } else {
+                showModal(lang === 'ar' ? 'خطأ' : 'Error', 
+                         lang === 'ar' ? 'يوجد أخطاء في الحل، تحقق من الحقول المميزة' : 'There are errors in the solution, check the highlighted fields');
+            }
+        }
+
+        function newCrossword() {
+            gameIsComplete = false;
+            resultSaved = false;
+            generateCrossword();
+            gameStartTime = Date.now();
+            startTimer();
+        }
+
+        // Word Search Game
+        let wordSearchGrid = [];
+        let wordSearchWords = [];
+        let foundWords = [];
+        let selectedCells = [];
+        let isSelecting = false;
+
+        function initWordSearch() {
+            const lang = document.getElementById('htmlRoot').lang;
+            const gameArea = document.getElementById('gameArea');
+            
+            // Check if we have words
+            if (!gameWords.wordsearch || gameWords.wordsearch.length === 0) {
+                gameArea.innerHTML = `
+                    <div class="game-header">
+                        <h2>${lang === 'ar' ? 'البحث عن الكلمات' : 'Word Search'}</h2>
+                    </div>
+                    <div class="no-words-message">
+                        <p>${lang === 'ar' ? 'لا توجد كلمات متاحة حالياً' : 'No words available currently'}</p>
+                        <p>${lang === 'ar' ? 'يرجى مطالبة المدير بإضافة كلمات للعبة' : 'Please ask the admin to add words for the game'}</p>
+                        <button class="btn btn-secondary" onclick="closeGame()" style="margin-top: 1rem;">
+                            ${lang === 'ar' ? 'إغلاق' : 'Close'}
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            gameArea.innerHTML = `
+                <div class="game-header">
+                    <h2>${lang === 'ar' ? 'البحث عن الكلمات' : 'Word Search'}</h2>
+                    <div class="timer">${lang === 'ar' ? 'الوقت' : 'Time'}: <span id="gameTimer">00:00</span></div>
+                </div>
+                <div class="wordsearch-container">
+                    <div class="wordsearch-stats">
+                        <div class="wordsearch-stat">
+                            <span id="foundCount">0</span> / <span id="totalCount">0</span> ${lang === 'ar' ? 'كلمات' : 'words'}
+                        </div>
+                    </div>
+                    <div class="wordsearch-words" id="wordsearchWords"></div>
+                    <div class="wordsearch-grid" id="wordsearchGrid"></div>
+                    <div style="margin-top: 2rem; text-align: center;">
+                        <button class="btn" onclick="newWordSearch()">${lang === 'ar' ? 'لعبة جديدة' : 'New Game'}</button>
+                        <button class="btn btn-secondary" onclick="closeGame()">${lang === 'ar' ? 'إغلاق' : 'Close'}</button>
+                    </div>
+                </div>
+            `;
+            
+            generateWordSearch();
+        }
+
+        function generateWordSearch() {
+            const lang = document.getElementById('htmlRoot').lang;
+            const gridSize = 12; // 12x12 grid
+            
+            // Initialize empty grid
+            wordSearchGrid = Array(gridSize).fill().map(() => Array(gridSize).fill(''));
+            foundWords = [];
+            selectedCells = [];
+            
+            // Select random words (5-7 words per game for fairness)
+            const wordCount = 5 + Math.floor(Math.random() * 3); // 5-7 words
+            const availableWords = [...gameWords.wordsearch];
+            wordSearchWords = [];
+            
+            for (let i = 0; i < wordCount && availableWords.length > 0; i++) {
+                const index = Math.floor(Math.random() * availableWords.length);
+                const wordData = availableWords.splice(index, 1)[0];
+                const word = lang === 'ar' ? wordData.wordAr : wordData.wordEn;
+                wordSearchWords.push(word.toUpperCase());
+            }
+            
+            // Place words in grid
+            wordSearchWords.forEach(word => {
+                placeWordInGrid(word, gridSize);
+            });
+            
+            // Fill empty cells with random letters
+            const letters = lang === 'ar' ? 
+                'ابتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('') :
+                'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            
+            for (let i = 0; i < gridSize; i++) {
+                for (let j = 0; j < gridSize; j++) {
+                    if (wordSearchGrid[i][j] === '') {
+                        wordSearchGrid[i][j] = letters[Math.floor(Math.random() * letters.length)];
+                    }
+                }
+            }
+            
+            renderWordSearch();
+        }
+
+        function placeWordInGrid(word, gridSize) {
+            const directions = [
+                [0, 1],   // horizontal
+                [1, 0],   // vertical
+                [1, 1],   // diagonal down-right
+                [-1, 1],  // diagonal up-right
+                [0, -1],  // horizontal reversed
+                [-1, 0],  // vertical reversed
+                [-1, -1], // diagonal up-left
+                [1, -1]   // diagonal down-left
+            ];
+            
+            let placed = false;
+            let attempts = 0;
+            
+            while (!placed && attempts < 100) {
+                const direction = directions[Math.floor(Math.random() * directions.length)];
+                const startRow = Math.floor(Math.random() * gridSize);
+                const startCol = Math.floor(Math.random() * gridSize);
+                
+                if (canPlaceWord(word, startRow, startCol, direction[0], direction[1], gridSize)) {
+                    for (let i = 0; i < word.length; i++) {
+                        const row = startRow + i * direction[0];
+                        const col = startCol + i * direction[1];
+                        wordSearchGrid[row][col] = word[i];
+                    }
+                    placed = true;
+                }
+                attempts++;
+            }
+        }
+
+        function canPlaceWord(word, startRow, startCol, dirRow, dirCol, gridSize) {
+            for (let i = 0; i < word.length; i++) {
+                const row = startRow + i * dirRow;
+                const col = startCol + i * dirCol;
+                
+                if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+                    return false;
+                }
+                
+                if (wordSearchGrid[row][col] !== '' && wordSearchGrid[row][col] !== word[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function renderWordSearch() {
+            // Render grid
+            const grid = document.getElementById('wordsearchGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < wordSearchGrid.length; i++) {
+                const row = document.createElement('div');
+                row.className = 'wordsearch-row';
+                
+                for (let j = 0; j < wordSearchGrid[i].length; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'wordsearch-cell';
+                    cell.textContent = wordSearchGrid[i][j];
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    
+                    cell.onmousedown = () => startSelection(i, j);
+                    cell.onmouseenter = () => continueSelection(i, j);
+                    cell.onmouseup = () => endSelection();
+                    
+                    // Touch events for mobile
+                    cell.ontouchstart = (e) => {
+                        e.preventDefault();
+                        startSelection(i, j);
+                    };
+                    cell.ontouchmove = (e) => {
+                        e.preventDefault();
+                        const touch = e.touches[0];
+                        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+                        if (element && element.classList.contains('wordsearch-cell')) {
+                            const r = parseInt(element.dataset.row);
+                            const c = parseInt(element.dataset.col);
+                            continueSelection(r, c);
+                        }
+                    };
+                    cell.ontouchend = (e) => {
+                        e.preventDefault();
+                        endSelection();
+                    };
+                    
+                    row.appendChild(cell);
+                }
+                
+                grid.appendChild(row);
+            }
+            
+            // Render word list
+            const wordsDiv = document.getElementById('wordsearchWords');
+            wordsDiv.innerHTML = '';
+            
+            wordSearchWords.forEach(word => {
+                const wordItem = document.createElement('div');
+                wordItem.className = 'wordsearch-word-item';
+                wordItem.id = `word-${word}`;
+                wordItem.textContent = word;
+                wordsDiv.appendChild(wordItem);
+            });
+            
+            // Update counts
+            document.getElementById('totalCount').textContent = wordSearchWords.length;
+            document.getElementById('foundCount').textContent = 0;
+        }
+
+        function startSelection(row, col) {
+            if (gameIsComplete) return;
+            isSelecting = true;
+            selectedCells = [{row, col}];
+            updateSelection();
+        }
+
+        function continueSelection(row, col) {
+            if (!isSelecting || gameIsComplete) return;
+            
+            // Check if it's a valid continuation (adjacent cell)
+            if (selectedCells.length > 0) {
+                const last = selectedCells[selectedCells.length - 1];
+                const rowDiff = Math.abs(row - last.row);
+                const colDiff = Math.abs(col - last.col);
+                
+                // Check if it's in a straight line from the first cell
+                if (selectedCells.length > 1) {
+                    const first = selectedCells[0];
+                    const dirRow = selectedCells[1].row - first.row;
+                    const dirCol = selectedCells[1].col - first.col;
+                    
+                    const expectedRow = first.row + selectedCells.length * dirRow;
+                    const expectedCol = first.col + selectedCells.length * dirCol;
+                    
+                    if (row === expectedRow && col === expectedCol) {
+                        selectedCells.push({row, col});
+                        updateSelection();
+                    }
+                } else if (rowDiff <= 1 && colDiff <= 1 && (rowDiff + colDiff) > 0) {
+                    selectedCells.push({row, col});
+                    updateSelection();
+                }
+            }
+        }
+
+        function endSelection() {
+            if (!isSelecting || gameIsComplete) return;
+            isSelecting = false;
+            
+            // Check if selected cells form a word
+            const word = selectedCells.map(cell => 
+                wordSearchGrid[cell.row][cell.col]
+            ).join('');
+            
+            const reversedWord = word.split('').reverse().join('');
+            
+            if (wordSearchWords.includes(word) && !foundWords.includes(word)) {
+                foundWords.push(word);
+                markWordAsFound(word);
+                selectedCells.forEach(cell => {
+                    const element = document.querySelector(`[data-row="${cell.row}"][data-col="${cell.col}"]`);
+                    if (element) element.classList.add('found');
+                });
+                checkWordSearchComplete();
+            } else if (wordSearchWords.includes(reversedWord) && !foundWords.includes(reversedWord)) {
+                foundWords.push(reversedWord);
+                markWordAsFound(reversedWord);
+                selectedCells.forEach(cell => {
+                    const element = document.querySelector(`[data-row="${cell.row}"][data-col="${cell.col}"]`);
+                    if (element) element.classList.add('found');
+                });
+                checkWordSearchComplete();
+            }
+            
+            // Clear selection
+            selectedCells = [];
+            updateSelection();
+        }
+
+        function updateSelection() {
+            // Clear all selecting classes
+            document.querySelectorAll('.wordsearch-cell').forEach(cell => {
+                cell.classList.remove('selecting');
+            });
+            
+            // Add selecting class to selected cells
+            selectedCells.forEach(cell => {
+                const element = document.querySelector(`[data-row="${cell.row}"][data-col="${cell.col}"]`);
+                if (element) element.classList.add('selecting');
+            });
+        }
+
+        function markWordAsFound(word) {
+            const wordElement = document.getElementById(`word-${word}`);
+            if (wordElement) {
+                wordElement.classList.add('found');
+            }
+            document.getElementById('foundCount').textContent = foundWords.length;
+        }
+
+        function checkWordSearchComplete() {
+            if (foundWords.length === wordSearchWords.length) {
+                gameIsComplete = true;
+                const time = stopTimer();
+                const lang = document.getElementById('htmlRoot').lang;
+                const winText = lang === 'ar' ? 'تهانينا!' : 'Congratulations!';
+                const message = lang === 'ar' 
+                    ? `لقد وجدت جميع الكلمات في ${formatTime(time)}`
+                    : `You found all words in ${formatTime(time)}`;
+                saveGameResult('wordsearch', 'completed', time);
+                showGameEndModal(winText, message, 'wordsearch');
+            }
+        }
+
+        function newWordSearch() {
+            gameIsComplete = false;
+            resultSaved = false;
+            generateWordSearch();
+            gameStartTime = Date.now();
+            startTimer();
+        }
+
+        // Helper Functions
+        function closeGame() {
+            document.getElementById('gameArea').style.display = 'none';
+            stopTimer();
+            currentGame = null;
+            gameIsComplete = false;
+            resultSaved = false;
+        }
+
+        function showGameEndModal(title, message, gameType) {
+            const lang = document.getElementById('htmlRoot').lang;
+            
+            // Check if this was a challenge completion
+            if (challengeData && currentGame === challengeData.game) {
+                // For challenge completion, redirect to main menu after showing congratulations
+                const modalContent = `
+                    <div style="text-align: center;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
+                        <h3>${title}</h3>
+                        <p style="margin: 1rem 0;">${message}</p>
+                        <p style="color: var(--success); font-weight: 600; margin: 1rem 0;">
+                            ${lang === 'ar' ? '✅ تم إكمال التحدي بنجاح!' : '✅ Challenge completed successfully!'}
+                        </p>
+                        <div style="margin-top: 2rem;">
+                            <button class="btn" onclick="completeChallengeAndRedirect()" style="margin: 0.5rem;">
+                                ${lang === 'ar' ? '🏠 العودة للقائمة الرئيسية' : '🏠 Back to Main Menu'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                showModal(lang === 'ar' ? 'تحدي مكتمل' : 'Challenge Completed', modalContent);
+            } else {
+                // Regular game completion
+                const modalContent = `
+                    <div style="text-align: center;">
+                        <h3>${message}</h3>
+                        <div style="margin-top: 2rem;">
+                            <button class="btn" onclick="playAgain('${gameType}')" style="margin: 0.5rem;">
+                                ${lang === 'ar' ? 'لعب مرة أخرى' : 'Play Again'}
+                            </button>
+                            <button class="btn btn-secondary" onclick="goToMainMenu()" style="margin: 0.5rem;">
+                                ${lang === 'ar' ? 'القائمة الرئيسية' : 'Main Menu'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                showModal(title, modalContent);
+            }
+        }
+        
+        function completeChallengeAndRedirect() {
+            closeModal();
+            closeGame();
+            // Update the challenge banner to show completed state
+            displayCompletedChallenge();
+        }
+        
+        function playAgain(gameType) {
+            closeModal();
+            gameIsComplete = false;
+            resultSaved = false;
+            gameStartTime = Date.now();
+            startTimer();
+            
+            switch(gameType) {
+                case 'sudoku':
+                    generateSudoku('medium');
+                    break;
+                case 'tictactoe':
+                    if (tictactoeMode) {
+                        playTicTacToe(tictactoeMode);
+                    } else {
+                        initTicTacToe();
+                    }
+                    break;
+                case 'hangman':
+                    startHangman();
+                    renderHangman();
+                    break;
+                case 'crossword':
+                    generateCrossword();
+                    break;
+                case 'wordsearch':
+                    generateWordSearch();
+                    break;
+            }
+        }
+        
+        function goToMainMenu() {
+            closeModal();
+            closeGame();
+            // Refresh challenge status in case it was just completed
+            if (challengeData) {
+                checkActiveChallenge();
+            }
+        }
+
+        function showModal(title, body) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = body;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function formatTime(milliseconds) {
+            const totalSeconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            const lang = document.getElementById('htmlRoot').lang;
+            
+            if (lang === 'ar') {
+                return `${minutes} دقيقة و ${seconds} ثانية`;
+            } else {
+                return `${minutes} minutes and ${seconds} seconds`;
+            }
+        }
+
+        async function saveGameResult(game, result, time) {
+            if (!currentUser || resultSaved) return;
+            
+            resultSaved = true;
+            
+            try {
+                const gameData = {
+                    employeeId: currentUser.id,
+                    employeeName: currentUser.name,
+                    game: game,
+                    result: result,
+                    time: time,
+                    timestamp: window.firestore.serverTimestamp(),
+                    isChallenge: challengeData && challengeData.game === game
+                };
+                
+                // Add challenge ID if playing a challenge
+                if (challengeData && challengeData.game === game) {
+                    gameData.challengeId = challengeData.id;
+                }
+                
+                await window.firestore.addDoc(
+                    window.firestore.collection(window.db, 'gameResults'),
+                    gameData
+                );
+                
+            } catch (error) {
+                console.error('Error saving game result:', error);
+            }
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
