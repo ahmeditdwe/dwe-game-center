@@ -1,0 +1,2789 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المدير - Dar Wa Emaar Game Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        :root {
+            --primary-color: #f36f2a;
+            --primary-dark: #d85a1a;
+            --bg-color: #f5f5f5;
+            --text-dark: #333;
+            --white: #ffffff;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --success: #4caf50;
+            --error: #f44336;
+            --warning: #ff9800;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-color) 0%, #e0e0e0 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            max-height: 60px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            max-width: 400px;
+            margin: 3rem auto;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+
+        .sidebar-item {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(243, 111, 42, 0.1);
+        }
+
+        .sidebar-item.active {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .sidebar-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Content Area */
+        .content-area {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .content-header h2 {
+            color: var(--text-dark);
+            font-size: 2rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #757575;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-danger {
+            background: var(--error);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            background: rgba(243, 111, 42, 0.05);
+        }
+
+        .file-upload.dragging {
+            background: rgba(243, 111, 42, 0.1);
+            border-color: var(--primary-dark);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: var(--bg-color);
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            color: #757575;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Game Status Cards */
+        .game-status-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .game-status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .game-status-header h3 {
+            color: var(--text-dark);
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .game-icon-large {
+            font-size: 2rem;
+            margin-left: 1rem;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            right: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(-26px);
+        }
+
+        .game-hint-input {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .last-modified {
+            font-size: 0.85rem;
+            color: #757575;
+            margin-top: 0.5rem;
+        }
+
+        /* Game Word Forms */
+        .game-word-form {
+            background: var(--bg-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .word-item {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #e0e0e0;
+        }
+
+        .word-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Challenge Form */
+        .challenge-form {
+            background: var(--bg-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .challenge-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+            border-right: 4px solid var(--primary-color);
+        }
+
+        .challenge-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .challenge-info-item {
+            padding: 0.5rem;
+            background: var(--bg-color);
+            border-radius: 5px;
+        }
+
+        .challenge-info-label {
+            font-size: 0.85rem;
+            color: #757575;
+            margin-bottom: 0.25rem;
+        }
+
+        .challenge-info-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .days-remaining {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--warning);
+            color: white;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #757575;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+
+        .message.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .message.error {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .message.warning {
+            background: rgba(255, 152, 0, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 2rem 0;
+        }
+
+        /* Logo Preview */
+        .logo-preview {
+            max-width: 200px;
+            max-height: 150px;
+            margin: 1rem 0;
+            border: 1px solid #e0e0e0;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            font-size: 1.2rem;
+            min-width: auto;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: rgba(243, 111, 42, 0.05);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: flex;
+                overflow-x: auto;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .sidebar-item {
+                min-width: 120px;
+                justify-content: center;
+                text-align: center;
+                margin: 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="header">
+        <div class="header-content">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <img id="headerLogo" class="logo" src="" alt="Dar Wa Emaar" style="display:none;">
+                <h1>لوحة تحكم المدير</h1>
+            </div>
+            <button class="btn btn-secondary" id="logoutBtn" style="display:none;" onclick="logout()">تسجيل الخروج</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Login Form -->
+        <div class="auth-container" id="authContainer">
+            <h2>تسجيل دخول المدير</h2>
+            <div id="messageBox"></div>
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn" style="width:100%;">تسجيل الدخول</button>
+            </form>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="dashboard-grid">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <div class="sidebar-item active" onclick="showSection('overview')">
+                        <span class="sidebar-icon">📊</span>
+                        <span>نظرة عامة</span>
+                    </div>
+                    <div class="sidebar-item" onclick="showSection('gamesManagement')">
+                        <span class="sidebar-icon">🎮</span>
+                        <span>إدارة الألعاب</span>
+                    </div>
+                    <div class="sidebar-item" onclick="showSection('employees')">
+                        <span class="sidebar-icon">👥</span>
+                        <span>الموظفين</span>
+                    </div>
+                    <div class="sidebar-item" onclick="showSection('challenges')">
+                        <span class="sidebar-icon">🏆</span>
+                        <span>التحديات</span>
+                    </div>
+                    <div class="sidebar-item" onclick="showSection('leaderboard')">
+                        <span class="sidebar-icon">🥇</span>
+                        <span>لوحة الصدارة</span>
+                    </div>
+                    <div class="sidebar-item" onclick="showSection('games')">
+                        <span class="sidebar-icon">📈</span>
+                        <span>إحصائيات الألعاب</span>
+                    </div>
+                    <div class="sidebar-item" onclick="showSection('gameWords')">
+                        <span class="sidebar-icon">📝</span>
+                        <span>كلمات الألعاب</span>
+                    </div>
+                    <div class="sidebar-item" onclick="showSection('settings')">
+                        <span class="sidebar-icon">⚙️</span>
+                        <span>الإعدادات</span>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="content-area">
+                    <!-- Overview Section -->
+                    <div id="overviewSection" class="section">
+                        <div class="content-header">
+                            <h2>نظرة عامة</h2>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalEmployees">0</div>
+                                <div class="stat-label">إجمالي الموظفين</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="activeEmployees">0</div>
+                                <div class="stat-label">موظفين نشطين</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="totalGames">0</div>
+                                <div class="stat-label">إجمالي الألعاب</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="activeChallenges">0</div>
+                                <div class="stat-label">تحديات نشطة</div>
+                            </div>
+                        </div>
+                        
+                        <h3 style="margin: 2rem 0 1rem;">نشاط اليوم</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>الموظف</th>
+                                        <th>اللعبة</th>
+                                        <th>النتيجة</th>
+                                        <th>الوقت</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="todayActivity">
+                                    <tr>
+                                        <td colspan="4" style="text-align:center;">لا يوجد نشاط اليوم</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Games Management Section -->
+                    <div id="gamesManagementSection" class="section" style="display:none;">
+                        <div class="content-header">
+                            <h2>إدارة الألعاب</h2>
+                        </div>
+                        
+                        <div id="gamesStatusList">
+                            <!-- Sudoku -->
+                            <div class="game-status-card">
+                                <div class="game-status-header">
+                                    <div style="display: flex; align-items: center;">
+                                        <span class="game-icon-large">🔢</span>
+                                        <div>
+                                            <h3>سودوكو</h3>
+                                            <div class="last-modified" id="sudoku-modified"></div>
+                                        </div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="sudoku-switch" checked onchange="toggleGame('sudoku', this.checked)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="game-hint-input" id="sudoku-hint-input">
+                                    <label>تلميح للعبة قريباً:</label>
+                                    <input type="text" id="sudoku-hint" placeholder="مثال: لعبة الأرقام القادمة..." value="لعبة أرقام منطقية جديدة">
+                                </div>
+                            </div>
+
+                            <!-- Tic Tac Toe -->
+                            <div class="game-status-card">
+                                <div class="game-status-header">
+                                    <div style="display: flex; align-items: center;">
+                                        <span class="game-icon-large">⭕</span>
+                                        <div>
+                                            <h3>إكس أو</h3>
+                                            <div class="last-modified" id="tictactoe-modified"></div>
+                                        </div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="tictactoe-switch" checked onchange="toggleGame('tictactoe', this.checked)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="game-hint-input" id="tictactoe-hint-input">
+                                    <label>تلميح للعبة قريباً:</label>
+                                    <input type="text" id="tictactoe-hint" placeholder="مثال: لعبة ثنائية قادمة..." value="لعبة استراتيجية ثنائية">
+                                </div>
+                            </div>
+
+                            <!-- Hangman -->
+                            <div class="game-status-card">
+                                <div class="game-status-header">
+                                    <div style="display: flex; align-items: center;">
+                                        <span class="game-icon-large">📝</span>
+                                        <div>
+                                            <h3>الرجل المشنوق</h3>
+                                            <div class="last-modified" id="hangman-modified"></div>
+                                        </div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="hangman-switch" checked onchange="toggleGame('hangman', this.checked)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="game-hint-input" id="hangman-hint-input">
+                                    <label>تلميح للعبة قريباً:</label>
+                                    <input type="text" id="hangman-hint" placeholder="مثال: لعبة كلمات قادمة..." value="لعبة تخمين الكلمات">
+                                </div>
+                            </div>
+
+                            <!-- Crossword -->
+                            <div class="game-status-card">
+                                <div class="game-status-header">
+                                    <div style="display: flex; align-items: center;">
+                                        <span class="game-icon-large">📰</span>
+                                        <div>
+                                            <h3>الكلمات المتقاطعة</h3>
+                                            <div class="last-modified" id="crossword-modified"></div>
+                                        </div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="crossword-switch" checked onchange="toggleGame('crossword', this.checked)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="game-hint-input" id="crossword-hint-input">
+                                    <label>تلميح للعبة قريباً:</label>
+                                    <input type="text" id="crossword-hint" placeholder="مثال: ألغاز كلمات قادمة..." value="لغز الكلمات المتقاطعة">
+                                </div>
+                            </div>
+
+                            <!-- Word Search -->
+                            <div class="game-status-card">
+                                <div class="game-status-header">
+                                    <div style="display: flex; align-items: center;">
+                                        <span class="game-icon-large">🔍</span>
+                                        <div>
+                                            <h3>البحث عن الكلمات</h3>
+                                            <div class="last-modified" id="wordsearch-modified"></div>
+                                        </div>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="wordsearch-switch" checked onchange="toggleGame('wordsearch', this.checked)">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="game-hint-input" id="wordsearch-hint-input">
+                                    <label>تلميح للعبة قريباً:</label>
+                                    <input type="text" id="wordsearch-hint" placeholder="مثال: لعبة البحث عن الكلمات..." value="ابحث عن الكلمات المخفية">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 2rem;">
+                            <button class="btn btn-success" onclick="saveGamesStatus()">حفظ التغييرات</button>
+                        </div>
+                    </div>
+
+                    <!-- Employees Section -->
+                    <div id="employeesSection" class="section" style="display:none;">
+                        <div class="content-header">
+                            <h2>إدارة الموظفين</h2>
+                        </div>
+                        
+                        <div class="file-upload" id="fileUpload">
+                            <p style="font-size: 2rem; margin-bottom: 1rem;">📁</p>
+                            <p>اسحب ملف Excel/CSV هنا أو انقر للاختيار</p>
+                            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display:none;">
+                        </div>
+                        
+                        <div id="uploadMessage"></div>
+                        
+                        <h3 style="margin: 2rem 0 1rem;">إضافة موظف يدوياً</h3>
+                        <form id="addEmployeeForm">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label>اسم الموظف</label>
+                                    <input type="text" id="empName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>رقم الموظف (8 أرقام)</label>
+                                    <input type="text" id="empId" maxlength="8" pattern="[0-9]{8}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>القسم (اختياري)</label>
+                                    <input type="text" id="empDept">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn">إضافة موظف</button>
+                        </form>
+                        
+                        <h3 style="margin: 2rem 0 1rem;">قائمة الموظفين</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>رقم الموظف</th>
+                                        <th>الاسم</th>
+                                        <th>القسم</th>
+                                        <th>حالة كلمة المرور</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="employeesList">
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">جاري التحميل...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Challenges Section -->
+                    <div id="challengesSection" class="section" style="display:none;">
+                        <div class="content-header">
+                            <h2>إدارة التحديات</h2>
+                        </div>
+                        
+                        <div class="challenge-form">
+                            <h3>إنشاء تحدي جديد</h3>
+                            <form id="createChallengeForm">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="form-group">
+                                        <label>اللعبة</label>
+                                        <select id="challengeGame" required>
+                                            <option value="sudoku">سودوكو</option>
+                                            <option value="tictactoe">إكس أو</option>
+                                            <option value="hangman">الرجل المشنوق</option>
+                                            <option value="crossword">الكلمات المتقاطعة</option>
+                                            <option value="wordsearch">البحث عن الكلمات</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>مستوى الصعوبة</label>
+                                        <select id="challengeDifficulty" required>
+                                            <option value="easy">سهل</option>
+                                            <option value="medium">متوسط</option>
+                                            <option value="hard">صعب</option>
+                                            <option value="expert">خبير</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>تاريخ البداية</label>
+                                        <input type="datetime-local" id="challengeStart" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>تاريخ النهاية</label>
+                                        <input type="datetime-local" id="challengeEnd" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>الوصف</label>
+                                    <textarea id="challengeDescription" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn">إنشاء التحدي</button>
+                            </form>
+                        </div>
+                        
+                        <h3 style="margin: 2rem 0 1rem;">التحديات النشطة</h3>
+                        <div id="activeChallengesList"></div>
+                        
+                        <h3 style="margin: 2rem 0 1rem;">التحديات السابقة</h3>
+                        <div id="pastChallengesList"></div>
+                    </div>
+
+                    <!-- Leaderboard Section -->
+                    <div id="leaderboardSection" class="section" style="display:none;">
+                        <div class="content-header">
+                            <h2>لوحة الصدارة</h2>
+                        </div>
+                        
+                        <div class="tabs">
+                            <div class="tab active" onclick="showLeaderboardTab('all')">الكل</div>
+                            <div class="tab" onclick="showLeaderboardTab('sudoku')">سودوكو</div>
+                            <div class="tab" onclick="showLeaderboardTab('tictactoe')">إكس أو</div>
+                            <div class="tab" onclick="showLeaderboardTab('hangman')">الرجل المشنوق</div>
+                            <div class="tab" onclick="showLeaderboardTab('crossword')">الكلمات المتقاطعة</div>
+                            <div class="tab" onclick="showLeaderboardTab('wordsearch')">البحث عن الكلمات</div>
+                            <div class="tab" onclick="showLeaderboardTab('challenges')">التحديات</div>
+                        </div>
+                        
+                        <!-- Challenge Filter Dropdown (shown only when challenges tab is active) -->
+                        <div id="challengeFilterContainer" style="display:none; margin: 1rem 0;">
+                            <div class="form-group" style="max-width: 400px;">
+                                <label for="challengeFilter">اختر التحدي:</label>
+                                <select id="challengeFilter" onchange="filterChallengeLeaderboard()">
+                                    <option value="all">جميع التحديات</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>المرتبة</th>
+                                        <th>الموظف</th>
+                                        <th>اللعبة</th>
+                                        <th>الوقت</th>
+                                        <th>النتيجة</th>
+                                        <th>التاريخ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaderboardData">
+                                    <tr>
+                                        <td colspan="6" style="text-align:center;">جاري التحميل...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Games Stats Section -->
+                    <div id="gamesSection" class="section" style="display:none;">
+                        <div class="content-header">
+                            <h2>إحصائيات الألعاب</h2>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                            <div class="stat-card">
+                                <h3>سودوكو</h3>
+                                <p>اللعبة الرئيسية</p>
+                                <div class="stat-value" id="sudokuPlays">0</div>
+                                <div class="stat-label">مرة لعب</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>إكس أو</h3>
+                                <p>لعبة ثنائية</p>
+                                <div class="stat-value" id="tictactoePlays">0</div>
+                                <div class="stat-label">مرة لعب</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>الرجل المشنوق</h3>
+                                <p>لعبة الكلمات</p>
+                                <div class="stat-value" id="hangmanPlays">0</div>
+                                <div class="stat-label">مرة لعب</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>الكلمات المتقاطعة</h3>
+                                <p>الألغاز</p>
+                                <div class="stat-value" id="crosswordPlays">0</div>
+                                <div class="stat-label">مرة لعب</div>
+                            </div>
+                            <div class="stat-card">
+                                <h3>البحث عن الكلمات</h3>
+                                <p>ابحث عن الكلمات</p>
+                                <div class="stat-value" id="wordsearchPlays">0</div>
+                                <div class="stat-label">مرة لعب</div>
+                            </div>
+                        </div>
+                        
+                        <h3 style="margin: 2rem 0 1rem;">إحصائيات الألعاب</h3>
+                        <div class="chart-container">
+                            <canvas id="gamesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Game Words Section -->
+                    <div id="gameWordsSection" class="section" style="display:none;">
+                        <div class="content-header">
+                            <h2>إدارة كلمات الألعاب</h2>
+                        </div>
+                        
+                        <!-- Hangman Words -->
+                        <div class="game-word-form">
+                            <h3>كلمات لعبة الرجل المشنوق</h3>
+                            <form id="addHangmanWordForm">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="form-group">
+                                        <label>الكلمة بالعربية</label>
+                                        <input type="text" id="hangmanWordAr" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>الكلمة بالإنجليزية</label>
+                                        <input type="text" id="hangmanWordEn" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>التلميح بالعربية</label>
+                                        <input type="text" id="hangmanHintAr" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>التلميح بالإنجليزية</label>
+                                        <input type="text" id="hangmanHintEn" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn">إضافة كلمة</button>
+                            </form>
+                            
+                            <h4 style="margin: 1.5rem 0 1rem;">الكلمات الحالية</h4>
+                            <div id="hangmanWordsList"></div>
+                        </div>
+                        
+                        <!-- Crossword Puzzles -->
+                        <div class="game-word-form">
+                            <h3>ألغاز الكلمات المتقاطعة</h3>
+                            <form id="addCrosswordPuzzleForm">
+                                <div class="form-group">
+                                    <label>اسم اللغز</label>
+                                    <input type="text" id="crosswordName" required>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="form-group">
+                                        <label>الأدلة الأفقية بالعربية</label>
+                                        <textarea id="crosswordAcrossAr" rows="3" placeholder="كل دليل في سطر منفصل"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>الأدلة الأفقية بالإنجليزية</label>
+                                        <textarea id="crosswordAcrossEn" rows="3" placeholder="Each clue on a separate line"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>الأدلة العمودية بالعربية</label>
+                                        <textarea id="crosswordDownAr" rows="3" placeholder="كل دليل في سطر منفصل"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>الأدلة العمودية بالإنجليزية</label>
+                                        <textarea id="crosswordDownEn" rows="3" placeholder="Each clue on a separate line"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>شبكة اللغز (استخدم # للخلايا السوداء)</label>
+                                    <textarea id="crosswordGrid" rows="5" placeholder="مثال:
+COMP#
+O###T
+D###E
+E###R" style="font-family: monospace;"></textarea>
+                                </div>
+                                <button type="submit" class="btn">إضافة لغز</button>
+                            </form>
+                            
+                            <h4 style="margin: 1.5rem 0 1rem;">الألغاز الحالية</h4>
+                            <div id="crosswordPuzzlesList"></div>
+                        </div>
+                        
+                        <!-- Word Search Words -->
+                        <div class="game-word-form">
+                            <h3>كلمات لعبة البحث عن الكلمات</h3>
+                            <form id="addWordsearchWordForm">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div class="form-group">
+                                        <label>الكلمة بالعربية</label>
+                                        <input type="text" id="wordsearchWordAr" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>الكلمة بالإنجليزية</label>
+                                        <input type="text" id="wordsearchWordEn" required>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn">إضافة كلمة</button>
+                            </form>
+                            
+                            <h4 style="margin: 1.5rem 0 1rem;">الكلمات الحالية</h4>
+                            <div id="wordsearchWordsList"></div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Section -->
+                    <div id="settingsSection" class="section" style="display:none;">
+                        <div class="content-header">
+                            <h2>الإعدادات</h2>
+                        </div>
+                        
+                        <h3>شعار الشركة</h3>
+                        <div class="form-group">
+                            <label>رفع الشعار (Base64)</label>
+                            <input type="file" id="logoInput" accept="image/*">
+                            <img id="logoPreview" class="logo-preview" style="display:none;">
+                        </div>
+                        <button class="btn" onclick="saveLogo()">حفظ الشعار</button>
+                        
+                        <h3 style="margin: 2rem 0 1rem;">إدارة المدراء</h3>
+                        <form id="addAdminForm">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-group">
+                                    <label>البريد الإلكتروني</label>
+                                    <input type="email" id="adminEmail" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>كلمة المرور</label>
+                                    <input type="password" id="adminPassword" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn">إضافة مدير</button>
+                        </form>
+                        
+                        <h3 style="margin: 2rem 0 1rem;">النسخ الاحتياطي</h3>
+                        <button class="btn btn-success" onclick="exportData()">تصدير البيانات</button>
+                        <button class="btn btn-warning" onclick="resetPasswords()">إعادة تعيين كلمات المرور</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-header" id="modalTitle"></div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Firebase & Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            signOut,
+            onAuthStateChanged
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js';
+        import { 
+            getFirestore, 
+            collection, 
+            doc, 
+            getDoc, 
+            setDoc, 
+            updateDoc, 
+            deleteDoc,
+            query, 
+            where, 
+            orderBy, 
+            limit, 
+            getDocs,
+            addDoc,
+            serverTimestamp,
+            writeBatch
+        } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_hyXMW8qg1BwtJdykoo4XFLDoAwsXxGY",
+            authDomain: "dar-wa-emaar-game-center.firebaseapp.com",
+            projectId: "dar-wa-emaar-game-center",
+            storageBucket: "dar-wa-emaar-game-center.firebasestorage.app",
+            messagingSenderId: "788128481095",
+            appId: "1:788128481095:web:50c85945e619a69a9f5662",
+            measurementId: "G-LRBZ9QLMZ2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.auth = auth;
+        window.db = db;
+        window.firestore = {
+            collection,
+            doc,
+            getDoc,
+            setDoc,
+            updateDoc,
+            deleteDoc,
+            query,
+            where,
+            orderBy,
+            limit,
+            getDocs,
+            addDoc,
+            serverTimestamp,
+            writeBatch
+        };
+        window.authFunctions = {
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            signOut
+        };
+
+        // Check auth state
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.currentAdmin = user;
+                loginSuccess();
+            } else {
+                window.currentAdmin = null;
+                document.getElementById('authContainer').style.display = 'block';
+                document.getElementById('dashboard').style.display = 'none';
+            }
+        });
+
+        // Load initial data
+        loadCompanyLogo();
+        loadGamesStatus();
+    </script>
+
+    <script>
+        let currentAdmin = null;
+        let gamesChart = null;
+
+        // Auth form handler
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            showLoading(true);
+
+            try {
+                const userCredential = await window.authFunctions.signInWithEmailAndPassword(
+                    window.auth, 
+                    email, 
+                    password
+                );
+                currentAdmin = userCredential.user;
+                loginSuccess();
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('خطأ في تسجيل الدخول: ' + getErrorMessage(error.code), 'error');
+                showLoading(false);
+            }
+        });
+
+        function getErrorMessage(code) {
+            const messages = {
+                'auth/invalid-email': 'البريد الإلكتروني غير صحيح',
+                'auth/user-not-found': 'المستخدم غير موجود',
+                'auth/wrong-password': 'كلمة المرور غير صحيحة',
+                'auth/user-disabled': 'الحساب معطل'
+            };
+            return messages[code] || 'حدث خطأ غير متوقع';
+        }
+
+        function loginSuccess() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'block';
+            
+            loadDashboardData();
+            loadGamesStatus();
+            showSection('overview');
+            showLoading(false);
+        }
+
+        async function logout() {
+            try {
+                await window.authFunctions.signOut(window.auth);
+                currentAdmin = null;
+                document.getElementById('authContainer').style.display = 'block';
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.getElementById('authForm').reset();
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        // Games Management Functions
+        async function loadGamesStatus() {
+            try {
+                const gamesDoc = await window.firestore.getDoc(
+                    window.firestore.doc(window.db, 'settings', 'games')
+                );
+                
+                if (gamesDoc.exists()) {
+                    const data = gamesDoc.data();
+                    
+                    // Set game switches
+                    document.getElementById('sudoku-switch').checked = data.sudoku?.active !== false;
+                    document.getElementById('tictactoe-switch').checked = data.tictactoe?.active !== false;
+                    document.getElementById('hangman-switch').checked = data.hangman?.active !== false;
+                    document.getElementById('crossword-switch').checked = data.crossword?.active !== false;
+                    document.getElementById('wordsearch-switch').checked = data.wordsearch?.active !== false;
+                    
+                    // Set hints
+                    if (data.sudoku?.hint) document.getElementById('sudoku-hint').value = data.sudoku.hint;
+                    if (data.tictactoe?.hint) document.getElementById('tictactoe-hint').value = data.tictactoe.hint;
+                    if (data.hangman?.hint) document.getElementById('hangman-hint').value = data.hangman.hint;
+                    if (data.crossword?.hint) document.getElementById('crossword-hint').value = data.crossword.hint;
+                    if (data.wordsearch?.hint) document.getElementById('wordsearch-hint').value = data.wordsearch.hint;
+                    
+                    // Show last modified
+                    updateLastModified('sudoku', data.sudoku);
+                    updateLastModified('tictactoe', data.tictactoe);
+                    updateLastModified('hangman', data.hangman);
+                    updateLastModified('crossword', data.crossword);
+                    updateLastModified('wordsearch', data.wordsearch);
+                    
+                    // Update hint inputs visibility
+                    toggleGame('sudoku', document.getElementById('sudoku-switch').checked);
+                    toggleGame('tictactoe', document.getElementById('tictactoe-switch').checked);
+                    toggleGame('hangman', document.getElementById('hangman-switch').checked);
+                    toggleGame('crossword', document.getElementById('crossword-switch').checked);
+                    toggleGame('wordsearch', document.getElementById('wordsearch-switch').checked);
+                }
+            } catch (error) {
+                console.error('Error loading games status:', error);
+            }
+        }
+
+        function updateLastModified(game, data) {
+            const element = document.getElementById(`${game}-modified`);
+            if (element && data?.lastModified) {
+                const date = data.lastModified.toDate ? data.lastModified.toDate() : new Date(data.lastModified);
+                element.textContent = `آخر تعديل: ${date.toLocaleDateString('en-US')} بواسطة ${data.lastModifiedBy || 'غير معروف'}`;
+            }
+        }
+
+        function toggleGame(game, isActive) {
+            const hintInput = document.getElementById(`${game}-hint-input`);
+            if (hintInput) {
+                hintInput.style.display = isActive ? 'none' : 'block';
+            }
+        }
+
+        async function saveGamesStatus() {
+            showLoading(true);
+            
+            const admin = currentAdmin || window.currentAdmin;
+            if (!admin) {
+                showMessage('يجب تسجيل الدخول أولاً', 'error');
+                showLoading(false);
+                return;
+            }
+            
+            try {
+                const gamesData = {
+                    sudoku: {
+                        active: document.getElementById('sudoku-switch').checked,
+                        hint: document.getElementById('sudoku-hint').value,
+                        lastModified: window.firestore.serverTimestamp(),
+                        lastModifiedBy: admin.email
+                    },
+                    tictactoe: {
+                        active: document.getElementById('tictactoe-switch').checked,
+                        hint: document.getElementById('tictactoe-hint').value,
+                        lastModified: window.firestore.serverTimestamp(),
+                        lastModifiedBy: admin.email
+                    },
+                    hangman: {
+                        active: document.getElementById('hangman-switch').checked,
+                        hint: document.getElementById('hangman-hint').value,
+                        lastModified: window.firestore.serverTimestamp(),
+                        lastModifiedBy: admin.email
+                    },
+                    crossword: {
+                        active: document.getElementById('crossword-switch').checked,
+                        hint: document.getElementById('crossword-hint').value,
+                        lastModified: window.firestore.serverTimestamp(),
+                        lastModifiedBy: admin.email
+                    },
+                    wordsearch: {
+                        active: document.getElementById('wordsearch-switch').checked,
+                        hint: document.getElementById('wordsearch-hint').value,
+                        lastModified: window.firestore.serverTimestamp(),
+                        lastModifiedBy: admin.email
+                    }
+                };
+                
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'settings', 'games'),
+                    gamesData,
+                    { merge: true }
+                );
+                
+                showMessage('تم حفظ إعدادات الألعاب بنجاح', 'success');
+                loadGamesStatus(); // Reload to show updated last modified info
+            } catch (error) {
+                console.error('Error saving games status:', error);
+                showMessage('خطأ في حفظ الإعدادات', 'error');
+            }
+            
+            showLoading(false);
+        }
+
+        // Section navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(`${sectionName}Section`).style.display = 'block';
+            
+            // Update sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.sidebar-item').classList.add('active');
+            
+            // Load section data
+            switch(sectionName) {
+                case 'overview':
+                    loadDashboardData();
+                    break;
+                case 'gamesManagement':
+                    loadGamesStatus();
+                    break;
+                case 'employees':
+                    loadEmployees();
+                    break;
+                case 'challenges':
+                    loadChallenges();
+                    break;
+                case 'leaderboard':
+                    loadLeaderboard('all');
+                    break;
+                case 'games':
+                    loadGamesStats();
+                    break;
+                case 'gameWords':
+                    loadGameWords();
+                    break;
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Get employees count
+                const employeesSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'employees')
+                );
+                document.getElementById('totalEmployees').textContent = employeesSnapshot.size;
+                
+                // Get active employees (with password)
+                let activeCount = 0;
+                employeesSnapshot.forEach(doc => {
+                    if (doc.data().password) activeCount++;
+                });
+                document.getElementById('activeEmployees').textContent = activeCount;
+                
+                // Get games played today
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                const gamesQuery = window.firestore.query(
+                    window.firestore.collection(window.db, 'gameResults'),
+                    window.firestore.where('timestamp', '>=', today),
+                    window.firestore.orderBy('timestamp', 'desc'),
+                    window.firestore.limit(10)
+                );
+                
+                const gamesSnapshot = await window.firestore.getDocs(gamesQuery);
+                document.getElementById('totalGames').textContent = gamesSnapshot.size;
+                
+                // Update today's activity table
+                const tbody = document.getElementById('todayActivity');
+                if (gamesSnapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا يوجد نشاط اليوم</td></tr>';
+                } else {
+                    tbody.innerHTML = '';
+                    gamesSnapshot.forEach(doc => {
+                        const data = doc.data();
+                        const row = tbody.insertRow();
+                        row.innerHTML = `
+                            <td>${data.employeeName || data.employeeId}</td>
+                            <td>${getGameName(data.game)}</td>
+                            <td>${getResultText(data.result)}</td>
+                            <td>${formatTime(data.time)}</td>
+                        `;
+                    });
+                }
+                
+                // Get active challenges
+                const now = new Date();
+                const challengesQuery = window.firestore.query(
+                    window.firestore.collection(window.db, 'challenges'),
+                    window.firestore.where('endDate', '>', now.toISOString())
+                );
+                const challengesSnapshot = await window.firestore.getDocs(challengesQuery);
+                
+                let activeChallengesCount = 0;
+                challengesSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (new Date(data.startDate) <= now) {
+                        activeChallengesCount++;
+                    }
+                });
+                document.getElementById('activeChallenges').textContent = activeChallengesCount;
+                
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // File upload handling
+        const fileUpload = document.getElementById('fileUpload');
+        const fileInput = document.getElementById('fileInput');
+
+        fileUpload.addEventListener('click', () => fileInput.click());
+        fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUpload.classList.add('dragging');
+        });
+        fileUpload.addEventListener('dragleave', () => {
+            fileUpload.classList.remove('dragging');
+        });
+        fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUpload.classList.remove('dragging');
+            handleFiles(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        async function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            const file = files[0];
+            const reader = new FileReader();
+            
+            showLoading(true);
+            
+            reader.onload = async (e) => {
+                try {
+                    let data;
+                    
+                    if (file.name.endsWith('.csv')) {
+                        // Parse CSV
+                        const text = e.target.result;
+                        data = parseCSV(text);
+                    } else {
+                        // Parse Excel
+                        const workbook = XLSX.read(e.target.result, { type: 'binary' });
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        data = XLSX.utils.sheet_to_json(firstSheet);
+                    }
+                    
+                    // Process and save employees
+                    await saveEmployees(data);
+                    
+                } catch (error) {
+                    console.error('File processing error:', error);
+                    showUploadMessage('خطأ في معالجة الملف', 'error');
+                    showLoading(false);
+                }
+            };
+            
+            if (file.name.endsWith('.csv')) {
+                reader.readAsText(file);
+            } else {
+                reader.readAsBinaryString(file);
+            }
+        }
+
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim()) {
+                    const values = lines[i].split(',').map(v => v.trim());
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        row[header] = values[index];
+                    });
+                    data.push(row);
+                }
+            }
+            
+            return data;
+        }
+
+        async function saveEmployees(data) {
+            const batch = window.firestore.writeBatch(window.db);
+            let successCount = 0;
+            let errorCount = 0;
+            
+            for (const row of data) {
+                const employeeId = row['ID'] || row['EmployeeID'] || row['رقم الموظف'];
+                const name = row['Name'] || row['EmployeeName'] || row['الاسم'];
+                const department = row['Department'] || row['القسم'] || '';
+                
+                if (employeeId && name) {
+                    // Validate ID is 8 digits
+                    if (/^\d{8}$/.test(employeeId.toString())) {
+                        const docRef = window.firestore.doc(window.db, 'employees', employeeId.toString());
+                        batch.set(docRef, {
+                            name: name,
+                            department: department,
+                            createdAt: window.firestore.serverTimestamp()
+                        }, { merge: true });
+                        successCount++;
+                    } else {
+                        errorCount++;
+                    }
+                }
+            }
+            
+            if (successCount > 0) {
+                await batch.commit();
+                showUploadMessage(`تم إضافة ${successCount} موظف بنجاح${errorCount > 0 ? ` (${errorCount} خطأ)` : ''}`, 'success');
+                loadEmployees();
+            } else {
+                showUploadMessage('لم يتم العثور على بيانات صحيحة', 'error');
+            }
+            
+            showLoading(false);
+        }
+
+        // Add employee manually
+        document.getElementById('addEmployeeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('empName').value;
+            const id = document.getElementById('empId').value;
+            const department = document.getElementById('empDept').value;
+            
+            if (!/^\d{8}$/.test(id)) {
+                showMessage('رقم الموظف يجب أن يكون 8 أرقام', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'employees', id),
+                    {
+                        name: name,
+                        department: department,
+                        createdAt: window.firestore.serverTimestamp()
+                    },
+                    { merge: true }
+                );
+                
+                showMessage('تم إضافة الموظف بنجاح', 'success');
+                document.getElementById('addEmployeeForm').reset();
+                loadEmployees();
+            } catch (error) {
+                console.error('Error adding employee:', error);
+                showMessage('خطأ في إضافة الموظف', 'error');
+            }
+            
+            showLoading(false);
+        });
+
+        // Load employees
+        async function loadEmployees() {
+            try {
+                const snapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'employees')
+                );
+                
+                const tbody = document.getElementById('employeesList');
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${doc.id}</td>
+                        <td>${data.name}</td>
+                        <td>${data.department || '-'}</td>
+                        <td>${data.password ? '<span style="color:var(--success)">✔ تم التعيين</span>' : '<span style="color:var(--warning)">في انتظار</span>'}</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-icon btn-warning" onclick="resetEmployeePassword('${doc.id}')">🔄</button>
+                            <button class="btn btn-icon btn-danger" onclick="deleteEmployee('${doc.id}')">🗑️</button>
+                        </td>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error loading employees:', error);
+            }
+        }
+
+        async function resetEmployeePassword(id) {
+            if (!confirm('هل أنت متأكد من إعادة تعيين كلمة المرور؟')) return;
+            
+            try {
+                await window.firestore.updateDoc(
+                    window.firestore.doc(window.db, 'employees', id),
+                    { password: null }
+                );
+                showMessage('تم إعادة تعيين كلمة المرور', 'success');
+                loadEmployees();
+            } catch (error) {
+                console.error('Error resetting password:', error);
+            }
+        }
+
+        async function deleteEmployee(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا الموظف؟')) return;
+            
+            try {
+                await window.firestore.deleteDoc(
+                    window.firestore.doc(window.db, 'employees', id)
+                );
+                showMessage('تم حذف الموظف', 'success');
+                loadEmployees();
+            } catch (error) {
+                console.error('Error deleting employee:', error);
+            }
+        }
+
+        // Create challenge
+        document.getElementById('createChallengeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const game = document.getElementById('challengeGame').value;
+            const difficulty = document.getElementById('challengeDifficulty').value;
+            const startDate = new Date(document.getElementById('challengeStart').value);
+            const endDate = new Date(document.getElementById('challengeEnd').value);
+            const description = document.getElementById('challengeDescription').value;
+            
+            if (endDate <= startDate) {
+                showMessage('تاريخ النهاية يجب أن يكون بعد تاريخ البداية', 'error');
+                return;
+            }
+            
+            const admin = currentAdmin || window.currentAdmin;
+            if (!admin) {
+                showMessage('يجب تسجيل الدخول أولاً', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                await window.firestore.addDoc(
+                    window.firestore.collection(window.db, 'challenges'),
+                    {
+                        game: game,
+                        difficulty: difficulty,
+                        startDate: startDate.toISOString(),
+                        endDate: endDate.toISOString(),
+                        description: description,
+                        createdAt: window.firestore.serverTimestamp(),
+                        createdBy: admin.email
+                    }
+                );
+                
+                showMessage('تم إنشاء التحدي بنجاح', 'success');
+                document.getElementById('createChallengeForm').reset();
+                loadChallenges();
+            } catch (error) {
+                console.error('Error creating challenge:', error);
+                showMessage('خطأ في إنشاء التحدي', 'error');
+            }
+            
+            showLoading(false);
+        });
+
+        // Load challenges
+        async function loadChallenges() {
+            try {
+                const now = new Date();
+                
+                // Active challenges
+                const activeQuery = window.firestore.query(
+                    window.firestore.collection(window.db, 'challenges'),
+                    window.firestore.where('endDate', '>', now.toISOString()),
+                    window.firestore.orderBy('endDate', 'asc')
+                );
+                
+                const activeSnapshot = await window.firestore.getDocs(activeQuery);
+                const activeList = document.getElementById('activeChallengesList');
+                activeList.innerHTML = '';
+                
+                if (activeSnapshot.empty) {
+                    activeList.innerHTML = '<p>لا توجد تحديات نشطة</p>';
+                } else {
+                    for (const doc of activeSnapshot.docs) {
+                        const data = doc.data();
+                        const startDate = new Date(data.startDate);
+                        const endDate = new Date(data.endDate);
+                        const isStarted = startDate <= now;
+                        
+                        // Calculate days remaining
+                        const daysRemaining = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+                        
+                        // Get participant count for this challenge
+                        const participantsQuery = window.firestore.query(
+                            window.firestore.collection(window.db, 'gameResults'),
+                            window.firestore.where('challengeId', '==', doc.id)
+                        );
+                        const participantsSnapshot = await window.firestore.getDocs(participantsQuery);
+                        const participantCount = participantsSnapshot.size;
+                        
+                        const card = document.createElement('div');
+                        card.className = 'challenge-card';
+                        card.innerHTML = `
+                            <h3>تحدي ${getGameName(data.game)}</h3>
+                            <div class="challenge-info">
+                                <div class="challenge-info-item">
+                                    <div class="challenge-info-label">الصعوبة</div>
+                                    <div class="challenge-info-value">${getDifficultyName(data.difficulty)}</div>
+                                </div>
+                                <div class="challenge-info-item">
+                                    <div class="challenge-info-label">البداية</div>
+                                    <div class="challenge-info-value">${startDate.toLocaleDateString('en-US')}</div>
+                                </div>
+                                <div class="challenge-info-item">
+                                    <div class="challenge-info-label">النهاية</div>
+                                    <div class="challenge-info-value">${endDate.toLocaleDateString('en-US')}</div>
+                                </div>
+                                <div class="challenge-info-item">
+                                    <div class="challenge-info-label">الحالة</div>
+                                    <div class="challenge-info-value">
+                                        ${isStarted ? '<span style="color: var(--success);">نشط</span>' : '<span style="color: var(--warning);">لم يبدأ بعد</span>'}
+                                    </div>
+                                </div>
+                                <div class="challenge-info-item">
+                                    <div class="challenge-info-label">المشاركون</div>
+                                    <div class="challenge-info-value">${participantCount}</div>
+                                </div>
+                                <div class="challenge-info-item">
+                                    <div class="challenge-info-label">الوقت المتبقي</div>
+                                    <div class="challenge-info-value">
+                                        <span class="days-remaining">${daysRemaining} يوم</span>
+                                    </div>
+                                </div>
+                            </div>
+                            ${data.description ? `<p style="margin-top: 1rem;">${data.description}</p>` : ''}
+                            <div style="margin-top: 1rem;">
+                                <button class="btn btn-success btn-icon" onclick="viewChallengeParticipants('${doc.id}', '${data.game}')">عرض المشاركين</button>
+                                <button class="btn btn-danger btn-icon" onclick="deleteChallenge('${doc.id}')">حذف</button>
+                            </div>
+                        `;
+                        activeList.appendChild(card);
+                    }
+                }
+                
+                // Past challenges
+                const pastQuery = window.firestore.query(
+                    window.firestore.collection(window.db, 'challenges'),
+                    window.firestore.where('endDate', '<=', now.toISOString()),
+                    window.firestore.orderBy('endDate', 'desc'),
+                    window.firestore.limit(10)
+                );
+                
+                const pastSnapshot = await window.firestore.getDocs(pastQuery);
+                const pastList = document.getElementById('pastChallengesList');
+                pastList.innerHTML = '';
+                
+                if (pastSnapshot.empty) {
+                    pastList.innerHTML = '<p>لا توجد تحديات سابقة</p>';
+                } else {
+                    for (const doc of pastSnapshot.docs) {
+                        const data = doc.data();
+                        
+                        // Get participant count
+                        const participantsQuery = window.firestore.query(
+                            window.firestore.collection(window.db, 'gameResults'),
+                            window.firestore.where('challengeId', '==', doc.id)
+                        );
+                        const participantsSnapshot = await window.firestore.getDocs(participantsQuery);
+                        const participantCount = participantsSnapshot.size;
+                        
+                        const card = document.createElement('div');
+                        card.className = 'stat-card';
+                        card.innerHTML = `
+                            <h4>${getGameName(data.game)} - ${getDifficultyName(data.difficulty)}</h4>
+                            <p>${data.description || 'بدون وصف'}</p>
+                            <p>انتهى: ${new Date(data.endDate).toLocaleDateString('en-US')}</p>
+                            <p style="color: var(--primary-color);">المشاركون: ${participantCount}</p>
+                            <button class="btn btn-success" onclick="viewChallengeParticipants('${doc.id}', '${data.game}')">عرض المشاركين والفائز</button>
+                        `;
+                        pastList.appendChild(card);
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error loading challenges:', error);
+            }
+        }
+        
+        async function viewChallengeParticipants(challengeId, gameName) {
+            try {
+                const participantsQuery = window.firestore.query(
+                    window.firestore.collection(window.db, 'gameResults'),
+                    window.firestore.where('challengeId', '==', challengeId),
+                    window.firestore.orderBy('time', 'asc')
+                );
+                
+                const snapshot = await window.firestore.getDocs(participantsQuery);
+                
+                if (snapshot.empty) {
+                    showModal('المشاركون', 'لا يوجد مشاركون في هذا التحدي بعد');
+                    return;
+                }
+                
+                let tableHTML = `
+                    <h3>مشاركو تحدي ${getGameName(gameName)}</h3>
+                    <table style="width: 100%; margin-top: 1rem;">
+                        <thead>
+                            <tr style="background: var(--primary-color); color: white;">
+                                <th style="padding: 0.5rem;">المرتبة</th>
+                                <th style="padding: 0.5rem;">الموظف</th>
+                                <th style="padding: 0.5rem;">الوقت</th>
+                                <th style="padding: 0.5rem;">النتيجة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                let rank = 1;
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const isWinner = rank === 1;
+                    const rowStyle = isWinner ? 'background: gold; font-weight: bold;' : '';
+                    tableHTML += `
+                        <tr style="${rowStyle}">
+                            <td style="padding: 0.5rem; text-align: center;">
+                                ${isWinner ? '🏆 ' : ''}${rank++}
+                            </td>
+                            <td style="padding: 0.5rem;">${data.employeeName || data.employeeId}</td>
+                            <td style="padding: 0.5rem;">${formatTime(data.time)}</td>
+                            <td style="padding: 0.5rem;">${getResultText(data.result)}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
+                
+                showModal('المشاركون في التحدي', tableHTML);
+            } catch (error) {
+                console.error('Error viewing participants:', error);
+                showModal('خطأ', 'حدث خطأ في عرض المشاركين');
+            }
+        }
+
+        async function deleteChallenge(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا التحدي؟')) return;
+            
+            try {
+                await window.firestore.deleteDoc(
+                    window.firestore.doc(window.db, 'challenges', id)
+                );
+                showMessage('تم حذف التحدي', 'success');
+                loadChallenges();
+            } catch (error) {
+                console.error('Error deleting challenge:', error);
+            }
+        }
+
+        // Leaderboard
+        function showLeaderboardTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Show/hide challenge filter dropdown
+            const challengeFilterContainer = document.getElementById('challengeFilterContainer');
+            if (tab === 'challenges') {
+                challengeFilterContainer.style.display = 'block';
+                loadChallengesList(); // Load challenges for dropdown
+            } else {
+                challengeFilterContainer.style.display = 'none';
+            }
+            
+            loadLeaderboard(tab);
+        }
+
+        async function loadChallengesList() {
+            try {
+                // Get all challenges for the dropdown
+                const challengesSnapshot = await window.firestore.getDocs(
+                    window.firestore.query(
+                        window.firestore.collection(window.db, 'challenges'),
+                        window.firestore.orderBy('endDate', 'desc')
+                    )
+                );
+                
+                const select = document.getElementById('challengeFilter');
+                select.innerHTML = '<option value="all">جميع التحديات</option>';
+                
+                challengesSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const startDate = new Date(data.startDate);
+                    const endDate = new Date(data.endDate);
+                    const now = new Date();
+                    const isActive = startDate <= now && endDate > now;
+                    const status = isActive ? '🟢' : '🔴';
+                    
+                    const option = document.createElement('option');
+                    option.value = doc.id;
+                    option.textContent = `${status} ${getGameName(data.game)} - ${getDifficultyName(data.difficulty)} (${startDate.toLocaleDateString('en-US')} - ${endDate.toLocaleDateString('en-US')})`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading challenges list:', error);
+            }
+        }
+
+        async function filterChallengeLeaderboard() {
+            const selectedChallenge = document.getElementById('challengeFilter').value;
+            
+            if (selectedChallenge === 'all') {
+                loadLeaderboard('challenges');
+            } else {
+                // Load specific challenge leaderboard
+                await loadSpecificChallengeLeaderboard(selectedChallenge);
+            }
+        }
+
+        async function loadSpecificChallengeLeaderboard(challengeId) {
+            try {
+                // First get challenge details
+                const challengeDoc = await window.firestore.getDoc(
+                    window.firestore.doc(window.db, 'challenges', challengeId)
+                );
+                
+                if (!challengeDoc.exists()) {
+                    showMessage('التحدي غير موجود', 'error');
+                    return;
+                }
+                
+                const challengeData = challengeDoc.data();
+                
+                // Get participants for this specific challenge
+                const participantsQuery = window.firestore.query(
+                    window.firestore.collection(window.db, 'gameResults'),
+                    window.firestore.where('challengeId', '==', challengeId),
+                    window.firestore.orderBy('time', 'asc')
+                );
+                
+                const snapshot = await window.firestore.getDocs(participantsQuery);
+                const tbody = document.getElementById('leaderboardData');
+                tbody.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">لا يوجد مشاركون في تحدي ${getGameName(challengeData.game)} - ${getDifficultyName(challengeData.difficulty)}</td></tr>`;
+                } else {
+                    let rank = 1;
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const dateStr = data.timestamp ? 
+                            new Date(data.timestamp.seconds * 1000).toLocaleDateString('en-US') : '-';
+                        const row = tbody.insertRow();
+                        
+                        // Highlight winner (rank 1)
+                        if (rank === 1) {
+                            row.style.background = 'linear-gradient(90deg, rgba(255,215,0,0.2) 0%, rgba(255,215,0,0.1) 100%)';
+                            row.style.fontWeight = 'bold';
+                        }
+                        
+                        row.innerHTML = `
+                            <td>${rank === 1 ? '🏆 ' : ''}${rank++}</td>
+                            <td>${data.employeeName || data.employeeId}</td>
+                            <td>${getGameName(data.game)} ${rank === 1 ? '👑' : ''}</td>
+                            <td>${formatTime(data.time)}</td>
+                            <td>${getResultText(data.result)}</td>
+                            <td>${dateStr}</td>
+                        `;
+                    });
+                    
+                    // Add challenge info at the bottom
+                    const infoRow = tbody.insertRow();
+                    infoRow.innerHTML = `
+                        <td colspan="6" style="text-align:center; padding: 1rem; background: var(--bg-color); font-style: italic;">
+                            تحدي ${getGameName(challengeData.game)} - مستوى ${getDifficultyName(challengeData.difficulty)} 
+                            (${new Date(challengeData.startDate).toLocaleDateString('en-US')} - ${new Date(challengeData.endDate).toLocaleDateString('en-US')})
+                            ${challengeData.description ? ' - ' + challengeData.description : ''}
+                        </td>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading specific challenge leaderboard:', error);
+                showMessage('خطأ في تحميل نتائج التحدي', 'error');
+            }
+        }
+
+        async function loadLeaderboard(filter) {
+            try {
+                let q;
+                
+                if (filter === 'all') {
+                    q = window.firestore.query(
+                        window.firestore.collection(window.db, 'gameResults'),
+                        window.firestore.orderBy('time', 'asc'),
+                        window.firestore.limit(50)
+                    );
+                } else if (filter === 'challenges') {
+                    // Check if a specific challenge is selected
+                    const selectedChallenge = document.getElementById('challengeFilter')?.value;
+                    if (selectedChallenge && selectedChallenge !== 'all') {
+                        await loadSpecificChallengeLeaderboard(selectedChallenge);
+                        return;
+                    }
+                    
+                    // Load all challenge participation data
+                    q = window.firestore.query(
+                        window.firestore.collection(window.db, 'gameResults'),
+                        window.firestore.where('isChallenge', '==', true),
+                        window.firestore.orderBy('time', 'asc'),
+                        window.firestore.limit(50)
+                    );
+                } else {
+                    q = window.firestore.query(
+                        window.firestore.collection(window.db, 'gameResults'),
+                        window.firestore.where('game', '==', filter),
+                        window.firestore.orderBy('time', 'asc'),
+                        window.firestore.limit(50)
+                    );
+                }
+                
+                const snapshot = await window.firestore.getDocs(q);
+                const tbody = document.getElementById('leaderboardData');
+                tbody.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد نتائج</td></tr>';
+                } else {
+                    // Group results by challenge if viewing all challenges
+                    if (filter === 'challenges' && (!document.getElementById('challengeFilter') || document.getElementById('challengeFilter').value === 'all')) {
+                        const challengeGroups = {};
+                        
+                        // Group by challengeId
+                        snapshot.forEach(doc => {
+                            const data = doc.data();
+                            if (data.challengeId) {
+                                if (!challengeGroups[data.challengeId]) {
+                                    challengeGroups[data.challengeId] = [];
+                                }
+                                challengeGroups[data.challengeId].push({ id: doc.id, ...data });
+                            }
+                        });
+                        
+                        // Display grouped results
+                        for (const challengeId in challengeGroups) {
+                            const participants = challengeGroups[challengeId];
+                            
+                            // Get challenge details
+                            try {
+                                const challengeDoc = await window.firestore.getDoc(
+                                    window.firestore.doc(window.db, 'challenges', challengeId)
+                                );
+                                
+                                if (challengeDoc.exists()) {
+                                    const challengeData = challengeDoc.data();
+                                    
+                                    // Add challenge header row
+                                    const headerRow = tbody.insertRow();
+                                    headerRow.style.background = 'var(--primary-color)';
+                                    headerRow.style.color = 'white';
+                                    headerRow.innerHTML = `
+                                        <td colspan="6" style="padding: 0.75rem; font-weight: bold;">
+                                            تحدي ${getGameName(challengeData.game)} - ${getDifficultyName(challengeData.difficulty)} 
+                                            (${new Date(challengeData.startDate).toLocaleDateString('en-US')} - ${new Date(challengeData.endDate).toLocaleDateString('en-US')})
+                                        </td>
+                                    `;
+                                    
+                                    // Sort participants by time
+                                    participants.sort((a, b) => a.time - b.time);
+                                    
+                                    // Add participant rows
+                                    let rank = 1;
+                                    participants.forEach(data => {
+                                        const dateStr = data.timestamp ? 
+                                            new Date(data.timestamp.seconds * 1000).toLocaleDateString('en-US') : '-';
+                                        const row = tbody.insertRow();
+                                        
+                                        if (rank === 1) {
+                                            row.style.background = 'rgba(255,215,0,0.1)';
+                                        }
+                                        
+                                        row.innerHTML = `
+                                            <td>${rank === 1 ? '🏆 ' : ''}${rank++}</td>
+                                            <td>${data.employeeName || data.employeeId}</td>
+                                            <td>${getGameName(data.game)}</td>
+                                            <td>${formatTime(data.time)}</td>
+                                            <td>${getResultText(data.result)}</td>
+                                            <td>${dateStr}</td>
+                                        `;
+                                    });
+                                    
+                                    // Add spacing row
+                                    const spacerRow = tbody.insertRow();
+                                    spacerRow.innerHTML = '<td colspan="6" style="height: 10px; background: transparent;"></td>';
+                                }
+                            } catch (error) {
+                                console.error('Error getting challenge details:', error);
+                            }
+                        }
+                        
+                        if (Object.keys(challengeGroups).length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد نتائج تحديات</td></tr>';
+                        }
+                    } else {
+                        // Normal display for non-challenge views
+                        let rank = 1;
+                        snapshot.forEach(doc => {
+                            const data = doc.data();
+                            const dateStr = data.timestamp ? 
+                                new Date(data.timestamp.seconds * 1000).toLocaleDateString('en-US') : '-';
+                            const row = tbody.insertRow();
+                            row.innerHTML = `
+                                <td>${rank++}</td>
+                                <td>${data.employeeName || data.employeeId}</td>
+                                <td>${getGameName(data.game || 'تحدي')}</td>
+                                <td>${formatTime(data.time)}</td>
+                                <td>${getResultText(data.result)}</td>
+                                <td>${dateStr}</td>
+                            `;
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading leaderboard:', error);
+            }
+        }
+
+        // Games statistics
+        async function loadGamesStats() {
+            try {
+                const games = ['sudoku', 'tictactoe', 'hangman', 'crossword', 'wordsearch'];
+                const counts = {};
+                
+                for (const game of games) {
+                    const q = window.firestore.query(
+                        window.firestore.collection(window.db, 'gameResults'),
+                        window.firestore.where('game', '==', game)
+                    );
+                    const snapshot = await window.firestore.getDocs(q);
+                    counts[game] = snapshot.size;
+                    document.getElementById(`${game}Plays`).textContent = snapshot.size;
+                }
+                
+                // Create chart
+                const ctx = document.getElementById('gamesChart');
+                if (ctx) {
+                    if (gamesChart) gamesChart.destroy();
+                    
+                    gamesChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['سودوكو', 'إكس أو', 'الرجل المشنوق', 'الكلمات المتقاطعة', 'البحث عن الكلمات'],
+                            datasets: [{
+                                label: 'عدد مرات اللعب',
+                                data: Object.values(counts),
+                                backgroundColor: 'rgba(243, 111, 42, 0.6)',
+                                borderColor: 'rgba(243, 111, 42, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading games stats:', error);
+            }
+        }
+
+        // Game Words Management
+        document.getElementById('addHangmanWordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const wordAr = document.getElementById('hangmanWordAr').value;
+            const wordEn = document.getElementById('hangmanWordEn').value.toUpperCase();
+            const hintAr = document.getElementById('hangmanHintAr').value;
+            const hintEn = document.getElementById('hangmanHintEn').value;
+            
+            showLoading(true);
+            
+            try {
+                await window.firestore.addDoc(
+                    window.firestore.collection(window.db, 'hangmanWords'),
+                    {
+                        wordAr: wordAr,
+                        wordEn: wordEn,
+                        hintAr: hintAr,
+                        hintEn: hintEn,
+                        createdAt: window.firestore.serverTimestamp()
+                    }
+                );
+                
+                showMessage('تم إضافة الكلمة بنجاح', 'success');
+                document.getElementById('addHangmanWordForm').reset();
+                loadGameWords();
+            } catch (error) {
+                console.error('Error adding hangman word:', error);
+                showMessage('خطأ في إضافة الكلمة', 'error');
+            }
+            
+            showLoading(false);
+        });
+
+        document.getElementById('addCrosswordPuzzleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('crosswordName').value;
+            const acrossAr = document.getElementById('crosswordAcrossAr').value.split('\n').filter(x => x);
+            const acrossEn = document.getElementById('crosswordAcrossEn').value.split('\n').filter(x => x);
+            const downAr = document.getElementById('crosswordDownAr').value.split('\n').filter(x => x);
+            const downEn = document.getElementById('crosswordDownEn').value.split('\n').filter(x => x);
+            const grid = document.getElementById('crosswordGrid').value;
+            
+            showLoading(true);
+            
+            try {
+                await window.firestore.addDoc(
+                    window.firestore.collection(window.db, 'crosswordPuzzles'),
+                    {
+                        name: name,
+                        acrossCluesAr: acrossAr,
+                        acrossCluesEn: acrossEn,
+                        downCluesAr: downAr,
+                        downCluesEn: downEn,
+                        grid: grid,
+                        createdAt: window.firestore.serverTimestamp()
+                    }
+                );
+                
+                showMessage('تم إضافة اللغز بنجاح', 'success');
+                document.getElementById('addCrosswordPuzzleForm').reset();
+                loadGameWords();
+            } catch (error) {
+                console.error('Error adding crossword puzzle:', error);
+                showMessage('خطأ في إضافة اللغز', 'error');
+            }
+            
+            showLoading(false);
+        });
+
+        // Add Word Search word form handler
+        document.getElementById('addWordsearchWordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const wordAr = document.getElementById('wordsearchWordAr').value.toUpperCase();
+            const wordEn = document.getElementById('wordsearchWordEn').value.toUpperCase();
+            
+            showLoading(true);
+            
+            try {
+                await window.firestore.addDoc(
+                    window.firestore.collection(window.db, 'wordsearchWords'),
+                    {
+                        wordAr: wordAr,
+                        wordEn: wordEn,
+                        createdAt: window.firestore.serverTimestamp()
+                    }
+                );
+                
+                showMessage('تم إضافة الكلمة بنجاح', 'success');
+                document.getElementById('addWordsearchWordForm').reset();
+                loadGameWords();
+            } catch (error) {
+                console.error('Error adding word search word:', error);
+                showMessage('خطأ في إضافة الكلمة', 'error');
+            }
+            
+            showLoading(false);
+        });
+
+        async function loadGameWords() {
+            try {
+                // Load Hangman words
+                const hangmanSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'hangmanWords')
+                );
+                
+                const hangmanList = document.getElementById('hangmanWordsList');
+                hangmanList.innerHTML = '';
+                
+                if (hangmanSnapshot.empty) {
+                    hangmanList.innerHTML = '<p>لا توجد كلمات</p>';
+                } else {
+                    hangmanSnapshot.forEach(doc => {
+                        const data = doc.data();
+                        const item = document.createElement('div');
+                        item.className = 'word-item';
+                        item.innerHTML = `
+                            <div class="word-item-header">
+                                <strong>AR: ${data.wordAr} | EN: ${data.wordEn}</strong>
+                                <button class="btn btn-danger btn-icon" onclick="deleteHangmanWord('${doc.id}')">حذف</button>
+                            </div>
+                            <p>تلميح عربي: ${data.hintAr}</p>
+                            <p>English Hint: ${data.hintEn}</p>
+                        `;
+                        hangmanList.appendChild(item);
+                    });
+                }
+                
+                // Load Crossword puzzles
+                const crosswordSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'crosswordPuzzles')
+                );
+                
+                const crosswordList = document.getElementById('crosswordPuzzlesList');
+                crosswordList.innerHTML = '';
+                
+                if (crosswordSnapshot.empty) {
+                    crosswordList.innerHTML = '<p>لا توجد ألغاز</p>';
+                } else {
+                    crosswordSnapshot.forEach(doc => {
+                        const data = doc.data();
+                        const item = document.createElement('div');
+                        item.className = 'word-item';
+                        item.innerHTML = `
+                            <div class="word-item-header">
+                                <strong>${data.name}</strong>
+                                <button class="btn btn-danger btn-icon" onclick="deleteCrosswordPuzzle('${doc.id}')">حذف</button>
+                            </div>
+                            <p>أدلة أفقية: ${data.acrossCluesAr ? data.acrossCluesAr.length : 0} عربي، ${data.acrossCluesEn ? data.acrossCluesEn.length : 0} إنجليزي</p>
+                            <p>أدلة عمودية: ${data.downCluesAr ? data.downCluesAr.length : 0} عربي، ${data.downCluesEn ? data.downCluesEn.length : 0} إنجليزي</p>
+                        `;
+                        crosswordList.appendChild(item);
+                    });
+                }
+                
+                // Load Word Search words
+                const wordsearchSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'wordsearchWords')
+                );
+                
+                const wordsearchList = document.getElementById('wordsearchWordsList');
+                wordsearchList.innerHTML = '';
+                
+                if (wordsearchSnapshot.empty) {
+                    wordsearchList.innerHTML = '<p>لا توجد كلمات</p>';
+                } else {
+                    wordsearchSnapshot.forEach(doc => {
+                        const data = doc.data();
+                        const item = document.createElement('div');
+                        item.className = 'word-item';
+                        item.innerHTML = `
+                            <div class="word-item-header">
+                                <strong>AR: ${data.wordAr} | EN: ${data.wordEn}</strong>
+                                <button class="btn btn-danger btn-icon" onclick="deleteWordsearchWord('${doc.id}')">حذف</button>
+                            </div>
+                        `;
+                        wordsearchList.appendChild(item);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading game words:', error);
+            }
+        }
+
+        async function deleteHangmanWord(id) {
+            if (!confirm('هل أنت متأكد من حذف هذه الكلمة؟')) return;
+            
+            try {
+                await window.firestore.deleteDoc(
+                    window.firestore.doc(window.db, 'hangmanWords', id)
+                );
+                showMessage('تم حذف الكلمة', 'success');
+                loadGameWords();
+            } catch (error) {
+                console.error('Error deleting hangman word:', error);
+            }
+        }
+
+        async function deleteCrosswordPuzzle(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا اللغز؟')) return;
+            
+            try {
+                await window.firestore.deleteDoc(
+                    window.firestore.doc(window.db, 'crosswordPuzzles', id)
+                );
+                showMessage('تم حذف اللغز', 'success');
+                loadGameWords();
+            } catch (error) {
+                console.error('Error deleting crossword puzzle:', error);
+            }
+        }
+
+        async function deleteWordsearchWord(id) {
+            if (!confirm('هل أنت متأكد من حذف هذه الكلمة؟')) return;
+            
+            try {
+                await window.firestore.deleteDoc(
+                    window.firestore.doc(window.db, 'wordsearchWords', id)
+                );
+                showMessage('تم حذف الكلمة', 'success');
+                loadGameWords();
+            } catch (error) {
+                console.error('Error deleting word search word:', error);
+            }
+        }
+
+        // Logo handling
+        document.getElementById('logoInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64 = e.target.result;
+                document.getElementById('logoPreview').src = base64;
+                document.getElementById('logoPreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        async function saveLogo() {
+            const logoPreview = document.getElementById('logoPreview');
+            if (!logoPreview.src) {
+                showMessage('الرجاء اختيار شعار أولاً', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                await window.firestore.setDoc(
+                    window.firestore.doc(window.db, 'settings', 'company'),
+                    {
+                        logo: logoPreview.src,
+                        updatedAt: window.firestore.serverTimestamp(),
+                        updatedBy: currentAdmin.email
+                    },
+                    { merge: true }
+                );
+                
+                showMessage('تم حفظ الشعار بنجاح', 'success');
+                loadCompanyLogo();
+            } catch (error) {
+                console.error('Error saving logo:', error);
+                showMessage('خطأ في حفظ الشعار', 'error');
+            }
+            
+            showLoading(false);
+        }
+
+        async function loadCompanyLogo() {
+            try {
+                const settingsDoc = await window.firestore.getDoc(
+                    window.firestore.doc(window.db, 'settings', 'company')
+                );
+                if (settingsDoc.exists()) {
+                    const data = settingsDoc.data();
+                    if (data.logo) {
+                        document.getElementById('headerLogo').src = data.logo;
+                        document.getElementById('headerLogo').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading logo:', error);
+            }
+        }
+
+        // Add admin
+        document.getElementById('addAdminForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password.length < 6) {
+                showMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+                return;
+            }
+            
+            showLoading(true);
+            
+            try {
+                await window.authFunctions.createUserWithEmailAndPassword(
+                    window.auth,
+                    email,
+                    password
+                );
+                
+                showMessage('تم إضافة المدير بنجاح', 'success');
+                document.getElementById('addAdminForm').reset();
+            } catch (error) {
+                console.error('Error adding admin:', error);
+                showMessage('خطأ في إضافة المدير: ' + getErrorMessage(error.code), 'error');
+            }
+            
+            showLoading(false);
+        });
+
+        // Export data
+        async function exportData() {
+            showLoading(true);
+            
+            try {
+                const employees = [];
+                const employeesSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'employees')
+                );
+                
+                employeesSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    employees.push({
+                        ID: doc.id,
+                        Name: data.name,
+                        Department: data.department || '',
+                        HasPassword: data.password ? 'Yes' : 'No'
+                    });
+                });
+                
+                const ws = XLSX.utils.json_to_sheet(employees);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Employees');
+                XLSX.writeFile(wb, 'DWE_GameCenter_Export.xlsx');
+                
+                showMessage('تم تصدير البيانات بنجاح', 'success');
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                showMessage('خطأ في تصدير البيانات', 'error');
+            }
+            
+            showLoading(false);
+        }
+
+        async function resetPasswords() {
+            if (!confirm('هل أنت متأكد من إعادة تعيين جميع كلمات المرور؟')) return;
+            
+            showLoading(true);
+            
+            try {
+                const batch = window.firestore.writeBatch(window.db);
+                const snapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'employees')
+                );
+                
+                snapshot.forEach(doc => {
+                    batch.update(doc.ref, { password: null });
+                });
+                
+                await batch.commit();
+                showMessage('تم إعادة تعيين جميع كلمات المرور', 'success');
+                loadEmployees();
+            } catch (error) {
+                console.error('Error resetting passwords:', error);
+                showMessage('خطأ في إعادة تعيين كلمات المرور', 'error');
+            }
+            
+            showLoading(false);
+        }
+
+        // Helper functions
+        function getGameName(gameId) {
+            const games = {
+                'sudoku': 'سودوكو',
+                'tictactoe': 'إكس أو',
+                'hangman': 'الرجل المشنوق',
+                'crossword': 'الكلمات المتقاطعة',
+                'wordsearch': 'البحث عن الكلمات'
+            };
+            return games[gameId] || gameId;
+        }
+
+        function getDifficultyName(difficulty) {
+            const difficulties = {
+                'easy': 'سهل',
+                'medium': 'متوسط',
+                'hard': 'صعب',
+                'expert': 'خبير'
+            };
+            return difficulties[difficulty] || difficulty;
+        }
+
+        function getResultText(result) {
+            const results = {
+                'completed': 'مكتمل',
+                'won': 'فوز',
+                'lost': 'خسارة',
+                'winner_X': 'فاز X',
+                'winner_O': 'فاز O',
+                'draw': 'تعادل'
+            };
+            return results[result] || result;
+        }
+
+        function formatTime(milliseconds) {
+            const totalSeconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes}:${String(seconds).padStart(2, '0')}`;
+        }
+
+        function showMessage(message, type) {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.className = `message ${type}`;
+            messageBox.textContent = message;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 5000);
+        }
+
+        function showUploadMessage(message, type) {
+            const messageBox = document.getElementById('uploadMessage');
+            messageBox.className = `message ${type}`;
+            messageBox.textContent = message;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'flex' : 'none';
+        }
+
+        function showModal(title, body) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = body;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
