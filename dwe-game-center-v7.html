@@ -416,6 +416,23 @@
             font-size: 1.2rem;
         }
 
+        /* Auto-complete celebration styles */
+        .sudoku-complete {
+            animation: completeFlash 2s ease-in-out;
+        }
+
+        @keyframes completeFlash {
+            0%, 100% { 
+                background: rgba(76, 175, 80, 0.1);
+                border-color: var(--success);
+            }
+            50% { 
+                background: rgba(76, 175, 80, 0.3);
+                border-color: var(--success);
+                transform: scale(1.02);
+            }
+        }
+
         /* Tic Tac Toe */
         .tictactoe-grid {
             display: grid;
@@ -770,7 +787,7 @@
 
         @keyframes fadeIn {
             0% { opacity: 0; }
-            100% { opacity: 1); }
+            100% { opacity: 1; }
         }
 
         .message {
@@ -857,15 +874,15 @@
                     <label for="employeeId" data-ar="رقم الموظف (8 أرقام)" data-en="Employee ID (8 digits)">رقم الموظف (8 أرقام)</label>
                     <input type="text" id="employeeId" maxlength="8" pattern="[0-9]{8}" required>
                 </div>
-                <div class="form-group" id="passwordGroup">
+                <div class="form-group" id="passwordGroup" style="display:none;">
                     <label for="password" data-ar="كلمة المرور" data-en="Password">كلمة المرور</label>
-                    <input type="password" id="password" required>
+                    <input type="password" id="password">
                 </div>
                 <div class="form-group" id="confirmPasswordGroup" style="display:none;">
                     <label for="confirmPassword" data-ar="تأكيد كلمة المرور" data-en="Confirm Password">تأكيد كلمة المرور</label>
                     <input type="password" id="confirmPassword">
                 </div>
-                <button type="submit" class="btn" style="width:100%;" data-ar="دخول" data-en="Enter">دخول</button>
+                <button type="submit" class="btn" style="width:100%;" id="authSubmitBtn" data-ar="التالي" data-en="Next">التالي</button>
             </form>
         </div>
 
@@ -1026,7 +1043,7 @@
                 z-index: 10000;
                 font-family: 'Cairo', sans-serif;
             `;
-            message.textContent = isArabic ? '✔ تم التبديل إلى العربية' : '✔ Switched to English';
+            message.textContent = isArabic ? '✓ تم التبديل إلى العربية' : '✓ Switched to English';
             document.body.appendChild(message);
             
             setTimeout(() => {
@@ -1129,7 +1146,7 @@
                 },
                 {
                     id: 'hangman',
-                    icon: '📝',
+                    icon: '🔤',
                     nameAr: 'الرجل المشنوق',
                     nameEn: 'Hangman',
                     descAr: 'احزر الكلمة',
@@ -1401,16 +1418,16 @@
             const button = document.getElementById('challengeButton');
             button.disabled = true;
             button.onclick = null;
-            button.textContent = lang === 'ar' ? '✔ تم إكمال التحدي' : '✔ Challenge Completed';
+            button.textContent = lang === 'ar' ? '✓ تم إكمال التحدي' : '✓ Challenge Completed';
             button.style.cursor = 'not-allowed';
         }
 
-        // Auth form handler
+        // Auth form handler with improved flow
         document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const employeeId = document.getElementById('employeeId').value;
-            const password = document.getElementById('password').value;
             
+            // First validation: Employee ID must be 8 digits
             if (employeeId.length !== 8 || !/^\d{8}$/.test(employeeId)) {
                 const lang = document.getElementById('htmlRoot').lang;
                 showMessage(lang === 'ar' ? 'رقم الموظف يجب أن يكون 8 أرقام' : 'Employee ID must be 8 digits', 'error');
@@ -1432,6 +1449,25 @@
                 }
 
                 const employeeData = employeeDoc.data();
+                
+                // Check if password fields are visible
+                const passwordGroup = document.getElementById('passwordGroup');
+                if (passwordGroup.style.display === 'none') {
+                    // First time entering ID - show password fields
+                    showPasswordFields(employeeData);
+                    showLoading(false);
+                    return;
+                }
+                
+                // Password fields are visible - validate login
+                const password = document.getElementById('password').value;
+                
+                if (!password) {
+                    const lang = document.getElementById('htmlRoot').lang;
+                    showMessage(lang === 'ar' ? 'يرجى إدخال كلمة المرور' : 'Please enter password', 'error');
+                    showLoading(false);
+                    return;
+                }
 
                 if (!employeeData.password) {
                     // First time - register password
@@ -1439,8 +1475,7 @@
                     
                     if (!confirmPassword) {
                         const lang = document.getElementById('htmlRoot').lang;
-                        document.getElementById('authTitle').textContent = lang === 'ar' ? 'تسجيل كلمة مرور جديدة' : 'Register New Password';
-                        document.getElementById('confirmPasswordGroup').style.display = 'block';
+                        showMessage(lang === 'ar' ? 'يرجى تأكيد كلمة المرور' : 'Please confirm password', 'error');
                         showLoading(false);
                         return;
                     }
@@ -1480,6 +1515,32 @@
             }
         });
 
+        function showPasswordFields(employeeData) {
+            const lang = document.getElementById('htmlRoot').lang;
+            const passwordGroup = document.getElementById('passwordGroup');
+            const confirmPasswordGroup = document.getElementById('confirmPasswordGroup');
+            const authTitle = document.getElementById('authTitle');
+            const authSubmitBtn = document.getElementById('authSubmitBtn');
+            
+            // Show password fields
+            passwordGroup.style.display = 'block';
+            
+            if (!employeeData.password) {
+                // New user - show confirmation field
+                confirmPasswordGroup.style.display = 'block';
+                authTitle.textContent = lang === 'ar' ? 'تسجيل كلمة مرور جديدة' : 'Register New Password';
+                authSubmitBtn.textContent = lang === 'ar' ? 'تسجيل' : 'Register';
+            } else {
+                // Existing user - just password
+                confirmPasswordGroup.style.display = 'none';
+                authTitle.textContent = lang === 'ar' ? 'أدخل كلمة المرور' : 'Enter Password';
+                authSubmitBtn.textContent = lang === 'ar' ? 'دخول' : 'Login';
+            }
+            
+            // Focus on password field
+            document.getElementById('password').focus();
+        }
+
         function loginSuccess() {
             document.getElementById('authContainer').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
@@ -1501,10 +1562,14 @@
             document.getElementById('authContainer').style.display = 'block';
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('authForm').reset();
+            
+            // Reset login form
+            document.getElementById('passwordGroup').style.display = 'none';
             document.getElementById('confirmPasswordGroup').style.display = 'none';
             document.getElementById('challengeBanner').style.display = 'none';
             const lang = document.getElementById('htmlRoot').lang;
             document.getElementById('authTitle').textContent = lang === 'ar' ? 'تسجيل الدخول' : 'Login';
+            document.getElementById('authSubmitBtn').textContent = lang === 'ar' ? 'التالي' : 'Next';
         }
 
         function showMessage(message, type) {
@@ -1665,7 +1730,7 @@
             return Date.now() - gameStartTime;
         }
 
-        // Sudoku Game
+        // Sudoku Game with Auto-completion
         function initSudoku(difficulty = 'medium') {
             const lang = document.getElementById('htmlRoot').lang;
             const gameArea = document.getElementById('gameArea');
@@ -1691,7 +1756,7 @@
                         <div style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
                             ${lang === 'ar' 
                                 ? 'لوحة المفاتيح: الأسهم للتنقل • 1-9 للملء • 0/Delete للمسح • Tab للتالي'
-                                : 'Keyboard: ↑↓←→ to move • 1-9 to fill • 0/Del to clear • Tab for next'}
+                                : 'Keyboard: ←↓↑→ to move • 1-9 to fill • 0/Del to clear • Tab for next'}
                         </div>
                         <div id="keyIndicator" style="margin-top: 0.5rem; font-size: 1.2rem; color: var(--primary-color); height: 30px;"></div>
                     </div>
@@ -1902,7 +1967,7 @@
                 if (num === 0) {
                     keyIndicator.textContent = lang === 'ar' ? '✗ تم المسح' : '✗ Cleared';
                 } else {
-                    keyIndicator.textContent = `✔ ${num}`;
+                    keyIndicator.textContent = `✓ ${num}`;
                 }
                 keyIndicator.style.animation = 'fadeIn 0.5s ease';
                 setTimeout(() => {
@@ -1937,6 +2002,52 @@
                         }
                     }, 500);
                 }
+            }
+            
+            // Auto-check completion after each input
+            setTimeout(() => {
+                autoCheckSudoku();
+            }, 100);
+        }
+
+        // Auto-check function for Sudoku
+        function autoCheckSudoku() {
+            if (gameIsComplete) return;
+            
+            let isComplete = true;
+            let hasErrors = false;
+            
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    if (sudokuPuzzle[i][j] === 0) {
+                        isComplete = false;
+                    } else if (sudokuPuzzle[i][j] !== sudokuSolution[i][j]) {
+                        hasErrors = true;
+                    }
+                }
+            }
+            
+            if (isComplete && !hasErrors) {
+                // Auto-complete celebration
+                const grid = document.getElementById('sudokuGrid');
+                grid.classList.add('sudoku-complete');
+                
+                const time = stopTimer();
+                gameIsComplete = true;
+                saveGameResult('sudoku', 'completed', time);
+                
+                disableGameControls();
+                
+                const lang = document.getElementById('htmlRoot').lang;
+                const title = lang === 'ar' ? 'تهانينا!' : 'Congratulations!';
+                const message = lang === 'ar' 
+                    ? `لقد أكملت السودوكو بنجاح في ${formatTime(time)}`
+                    : `You completed Sudoku successfully in ${formatTime(time)}`;
+                
+                // Show completion animation first, then modal
+                setTimeout(() => {
+                    showGameEndModal(title, message, 'sudoku');
+                }, 1500);
             }
         }
 
@@ -2060,45 +2171,7 @@
         }
 
         function checkSudoku() {
-            if (gameIsComplete) {
-                return;
-            }
-            
-            let isComplete = true;
-            let hasErrors = false;
-            
-            for (let i = 0; i < 9; i++) {
-                for (let j = 0; j < 9; j++) {
-                    if (sudokuPuzzle[i][j] === 0) {
-                        isComplete = false;
-                    } else if (sudokuPuzzle[i][j] !== sudokuSolution[i][j]) {
-                        hasErrors = true;
-                    }
-                }
-            }
-            
-            const lang = document.getElementById('htmlRoot').lang;
-            
-            if (isComplete && !hasErrors) {
-                const time = stopTimer();
-                gameIsComplete = true;
-                saveGameResult('sudoku', 'completed', time);
-                
-                disableGameControls();
-                
-                const title = lang === 'ar' ? 'تهانينا!' : 'Congratulations!';
-                const message = lang === 'ar' 
-                    ? `لقد أكملت السودوكو بنجاح في ${formatTime(time)}`
-                    : `You completed Sudoku successfully in ${formatTime(time)}`;
-                    
-                showGameEndModal(title, message, 'sudoku');
-            } else if (hasErrors) {
-                showModal(lang === 'ar' ? 'خطأ' : 'Error', 
-                         lang === 'ar' ? 'يوجد أخطاء في الحل، تحقق من الأرقام المميزة باللون الأحمر' : 'There are errors in the solution, check the numbers marked in red');
-            } else {
-                showModal(lang === 'ar' ? 'غير مكتمل' : 'Incomplete', 
-                         lang === 'ar' ? 'اللغز غير مكتمل بعد' : 'The puzzle is not complete yet');
-            }
+            autoCheckSudoku(); // Use the same auto-check function
         }
 
         function newSudoku() {
@@ -2109,7 +2182,7 @@
             startTimer();
         }
 
-        // Tic Tac Toe Game
+        // Tic Tac Toe Game with Auto-completion
         function initTicTacToe() {
             const lang = document.getElementById('htmlRoot').lang;
             const gameArea = document.getElementById('gameArea');
@@ -2175,6 +2248,7 @@
             tictactoeBoard[index] = currentPlayer;
             renderTicTacToe();
             
+            // Auto-check for winner
             if (checkTicTacToeWinner()) {
                 gameActive = false;
                 gameIsComplete = true;
@@ -2183,10 +2257,15 @@
                 const winnerText = lang === 'ar' ? `الفائز: ${currentPlayer}` : `Winner: ${currentPlayer}`;
                 saveGameResult('tictactoe', `winner_${currentPlayer}`, time);
                 
-                showGameEndModal(winnerText, '', 'tictactoe');
+                // Auto-complete - show winner immediately
+                document.getElementById('tictactoeStatus').textContent = winnerText;
+                setTimeout(() => {
+                    showGameEndModal(winnerText, '', 'tictactoe');
+                }, 1000);
                 return;
             }
             
+            // Auto-check for draw
             if (!tictactoeBoard.includes('')) {
                 gameActive = false;
                 gameIsComplete = true;
@@ -2194,7 +2273,11 @@
                 const drawText = lang === 'ar' ? 'تعادل!' : 'Draw!';
                 saveGameResult('tictactoe', 'draw', Date.now() - gameStartTime);
                 
-                showGameEndModal(drawText, '', 'tictactoe');
+                // Auto-complete - show draw immediately
+                document.getElementById('tictactoeStatus').textContent = drawText;
+                setTimeout(() => {
+                    showGameEndModal(drawText, '', 'tictactoe');
+                }, 1000);
                 return;
             }
             
@@ -2226,6 +2309,7 @@
             tictactoeBoard[move] = 'O';
             renderTicTacToe();
             
+            // Auto-check for winner
             if (checkTicTacToeWinner()) {
                 gameActive = false;
                 gameIsComplete = true;
@@ -2234,10 +2318,15 @@
                 const lostText = lang === 'ar' ? 'الكمبيوتر فاز!' : 'Computer Won!';
                 saveGameResult('tictactoe', 'winner_O', time);
                 
-                showGameEndModal(lostText, '', 'tictactoe');
+                // Auto-complete - show result immediately
+                document.getElementById('tictactoeStatus').textContent = lostText;
+                setTimeout(() => {
+                    showGameEndModal(lostText, '', 'tictactoe');
+                }, 1000);
                 return;
             }
             
+            // Auto-check for draw
             if (!tictactoeBoard.includes('')) {
                 gameActive = false;
                 gameIsComplete = true;
@@ -2245,7 +2334,11 @@
                 const drawText = lang === 'ar' ? 'تعادل!' : 'Draw!';
                 saveGameResult('tictactoe', 'draw', Date.now() - gameStartTime);
                 
-                showGameEndModal(drawText, '', 'tictactoe');
+                // Auto-complete - show draw immediately
+                document.getElementById('tictactoeStatus').textContent = drawText;
+                setTimeout(() => {
+                    showGameEndModal(drawText, '', 'tictactoe');
+                }, 1000);
                 return;
             }
             
@@ -2306,7 +2399,7 @@
             }
         }
 
-        // Hangman Game
+        // Hangman Game with Auto-completion
         function initHangman() {
             const lang = document.getElementById('htmlRoot').lang;
             const gameArea = document.getElementById('gameArea');
@@ -2414,20 +2507,28 @@
             const stages = ['😊', '😐', '😟', '😰', '😱', '💀'];
             document.getElementById('hangmanDrawing').textContent = stages[Math.min(wrongGuesses, 5)];
             
-            // Check win/lose
+            // Auto-check win/lose
             if (!wordDisplay.includes('_')) {
                 gameIsComplete = true;
                 const time = stopTimer();
                 const winText = lang === 'ar' ? 'تهانينا!' : 'Congratulations!';
                 const message = lang === 'ar' ? `لقد حللت الكلمة "${hangmanWord}" بنجاح!` : `You solved the word "${hangmanWord}" successfully!`;
                 saveGameResult('hangman', 'won', time);
-                showGameEndModal(winText, message, 'hangman');
+                
+                // Auto-complete - show win immediately
+                setTimeout(() => {
+                    showGameEndModal(winText, message, 'hangman');
+                }, 500);
             } else if (wrongGuesses >= 6) {
                 gameIsComplete = true;
                 const loseText = lang === 'ar' ? 'انتهت اللعبة' : 'Game Over';
                 const message = lang === 'ar' ? `الكلمة كانت: ${hangmanWord}` : `The word was: ${hangmanWord}`;
                 saveGameResult('hangman', 'lost', Date.now() - gameStartTime);
-                showGameEndModal(loseText, message, 'hangman');
+                
+                // Auto-complete - show lose immediately
+                setTimeout(() => {
+                    showGameEndModal(loseText, message, 'hangman');
+                }, 500);
             }
         }
 
@@ -2522,6 +2623,11 @@
                             input.oninput = function() {
                                 if (gameIsComplete) {
                                     this.value = '';
+                                } else {
+                                    // Auto-check on each input
+                                    setTimeout(() => {
+                                        autoCheckCrossword();
+                                    }, 100);
                                 }
                             };
                             cell.appendChild(input);
@@ -2551,31 +2657,55 @@
             }
         }
 
-        function checkCrossword() {
+        function autoCheckCrossword() {
             if (gameIsComplete) return;
             
             const inputs = document.querySelectorAll('.crossword-cell input');
-            let correct = true;
+            let allFilled = true;
+            let allCorrect = true;
             
             inputs.forEach(input => {
-                if (input.value.toUpperCase() !== input.dataset.answer) {
-                    correct = false;
-                    input.style.background = 'rgba(244, 67, 54, 0.1)';
-                } else {
-                    input.style.background = 'rgba(76, 175, 80, 0.1)';
+                if (!input.value) {
+                    allFilled = false;
+                } else if (input.value.toUpperCase() !== input.dataset.answer) {
+                    allCorrect = false;
                 }
             });
             
-            const lang = document.getElementById('htmlRoot').lang;
-            
-            if (correct) {
+            if (allFilled && allCorrect) {
                 gameIsComplete = true;
                 const time = stopTimer();
+                const lang = document.getElementById('htmlRoot').lang;
                 const winText = lang === 'ar' ? 'تهانينا!' : 'Congratulations!';
                 const message = lang === 'ar' ? `لقد حللت اللغز بنجاح في ${formatTime(time)}` : `You solved the puzzle successfully in ${formatTime(time)}`;
                 saveGameResult('crossword', 'completed', time);
-                showGameEndModal(winText, message, 'crossword');
-            } else {
+                
+                // Auto-complete - highlight all correct answers
+                inputs.forEach(input => {
+                    input.style.background = 'rgba(76, 175, 80, 0.3)';
+                });
+                
+                setTimeout(() => {
+                    showGameEndModal(winText, message, 'crossword');
+                }, 1000);
+            }
+        }
+
+        function checkCrossword() {
+            autoCheckCrossword(); // Use the same auto-check function
+            
+            // If not complete, show errors
+            if (!gameIsComplete) {
+                const inputs = document.querySelectorAll('.crossword-cell input');
+                inputs.forEach(input => {
+                    if (input.value && input.value.toUpperCase() !== input.dataset.answer) {
+                        input.style.background = 'rgba(244, 67, 54, 0.1)';
+                    } else if (input.value) {
+                        input.style.background = 'rgba(76, 175, 80, 0.1)';
+                    }
+                });
+                
+                const lang = document.getElementById('htmlRoot').lang;
                 showModal(lang === 'ar' ? 'خطأ' : 'Error', 
                          lang === 'ar' ? 'يوجد أخطاء في الحل، تحقق من الحقول المميزة' : 'There are errors in the solution, check the highlighted fields');
             }
@@ -2589,7 +2719,7 @@
             startTimer();
         }
 
-        // Word Search Game
+        // Word Search Game with Auto-completion
         let wordSearchGrid = [];
         let wordSearchWords = [];
         let foundWords = [];
@@ -2894,7 +3024,11 @@
                     ? `لقد وجدت جميع الكلمات في ${formatTime(time)}`
                     : `You found all words in ${formatTime(time)}`;
                 saveGameResult('wordsearch', 'completed', time);
-                showGameEndModal(winText, message, 'wordsearch');
+                
+                // Auto-complete - show celebration
+                setTimeout(() => {
+                    showGameEndModal(winText, message, 'wordsearch');
+                }, 1000);
             }
         }
 
