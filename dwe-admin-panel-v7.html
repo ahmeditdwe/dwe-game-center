@@ -765,7 +765,7 @@
                             <div class="game-status-card">
                                 <div class="game-status-header">
                                     <div style="display: flex; align-items: center;">
-                                        <span class="game-icon-large">📝</span>
+                                        <span class="game-icon-large">🎯</span>
                                         <div>
                                             <h3>الرجل المشنوق</h3>
                                             <div class="last-modified" id="hangman-modified"></div>
@@ -967,8 +967,9 @@
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>المرتبة</th>
-                                        <th>الموظف</th>
+                                        <th>الترتيب</th>
+                                        <th>رقم الموظف</th>
+                                        <th>اسم الموظف</th>
                                         <th>اللعبة</th>
                                         <th>الوقت</th>
                                         <th>النتيجة</th>
@@ -977,7 +978,7 @@
                                 </thead>
                                 <tbody id="leaderboardData">
                                     <tr>
-                                        <td colspan="6" style="text-align:center;">جاري التحميل...</td>
+                                        <td colspan="7" style="text-align:center;">جاري التحميل...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1156,8 +1157,14 @@ E###R" style="font-family: monospace;"></textarea>
                             <button type="submit" class="btn">إضافة مدير</button>
                         </form>
                         
-                        <h3 style="margin: 2rem 0 1rem;">النسخ الاحتياطي</h3>
-                        <button class="btn btn-success" onclick="exportData()">تصدير البيانات</button>
+                        <h3 style="margin: 2rem 0 1rem;">النسخ الاحتياطي والتصدير</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <button class="btn btn-success" onclick="exportEmployees()">تصدير الموظفين</button>
+                            <button class="btn btn-success" onclick="exportGameResults()">تصدير نتائج الألعاب</button>
+                            <button class="btn btn-success" onclick="exportChallenges()">تصدير التحديات</button>
+                            <button class="btn btn-success" onclick="exportAllData()">تصدير جميع البيانات</button>
+                        </div>
+                        <br>
                         <button class="btn btn-warning" onclick="resetPasswords()">إعادة تعيين كلمات المرور</button>
                     </div>
                 </div>
@@ -1722,7 +1729,7 @@ E###R" style="font-family: monospace;"></textarea>
                         <td>${doc.id}</td>
                         <td>${data.name}</td>
                         <td>${data.department || '-'}</td>
-                        <td>${data.password ? '<span style="color:var(--success)">✔ تم التعيين</span>' : '<span style="color:var(--warning)">في انتظار</span>'}</td>
+                        <td>${data.password ? '<span style="color:var(--success)">✓ تم التعيين</span>' : '<span style="color:var(--warning)">في انتظار</span>'}</td>
                         <td class="action-buttons">
                             <button class="btn btn-icon btn-warning" onclick="resetEmployeePassword('${doc.id}')">🔄</button>
                             <button class="btn btn-icon btn-danger" onclick="deleteEmployee('${doc.id}')">🗑️</button>
@@ -1955,7 +1962,7 @@ E###R" style="font-family: monospace;"></textarea>
                     <table style="width: 100%; margin-top: 1rem;">
                         <thead>
                             <tr style="background: var(--primary-color); color: white;">
-                                <th style="padding: 0.5rem;">المرتبة</th>
+                                <th style="padding: 0.5rem;">الترتيب</th>
                                 <th style="padding: 0.5rem;">الموظف</th>
                                 <th style="padding: 0.5rem;">الوقت</th>
                                 <th style="padding: 0.5rem;">النتيجة</th>
@@ -2092,7 +2099,7 @@ E###R" style="font-family: monospace;"></textarea>
                 tbody.innerHTML = '';
                 
                 if (snapshot.empty) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">لا يوجد مشاركون في تحدي ${getGameName(challengeData.game)} - ${getDifficultyName(challengeData.difficulty)}</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">لا يوجد مشاركون في تحدي ${getGameName(challengeData.game)} - ${getDifficultyName(challengeData.difficulty)}</td></tr>`;
                 } else {
                     let rank = 1;
                     snapshot.forEach(doc => {
@@ -2109,8 +2116,9 @@ E###R" style="font-family: monospace;"></textarea>
                         
                         row.innerHTML = `
                             <td>${rank === 1 ? '🏆 ' : ''}${rank++}</td>
+                            <td>${data.employeeId}</td>
                             <td>${data.employeeName || data.employeeId}</td>
-                            <td>${getGameName(data.game)} ${rank === 1 ? '👑' : ''}</td>
+                            <td>${getGameName(data.game)} ${rank === 1 ? '🏅' : ''}</td>
                             <td>${formatTime(data.time)}</td>
                             <td>${getResultText(data.result)}</td>
                             <td>${dateStr}</td>
@@ -2120,7 +2128,7 @@ E###R" style="font-family: monospace;"></textarea>
                     // Add challenge info at the bottom
                     const infoRow = tbody.insertRow();
                     infoRow.innerHTML = `
-                        <td colspan="6" style="text-align:center; padding: 1rem; background: var(--bg-color); font-style: italic;">
+                        <td colspan="7" style="text-align:center; padding: 1rem; background: var(--bg-color); font-style: italic;">
                             تحدي ${getGameName(challengeData.game)} - مستوى ${getDifficultyName(challengeData.difficulty)} 
                             (${new Date(challengeData.startDate).toLocaleDateString('en-US')} - ${new Date(challengeData.endDate).toLocaleDateString('en-US')})
                             ${challengeData.description ? ' - ' + challengeData.description : ''}
@@ -2172,7 +2180,7 @@ E###R" style="font-family: monospace;"></textarea>
                 tbody.innerHTML = '';
                 
                 if (snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد نتائج</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">لا توجد نتائج</td></tr>';
                 } else {
                     // Group results by challenge if viewing all challenges
                     if (filter === 'challenges' && (!document.getElementById('challengeFilter') || document.getElementById('challengeFilter').value === 'all')) {
@@ -2207,7 +2215,7 @@ E###R" style="font-family: monospace;"></textarea>
                                     headerRow.style.background = 'var(--primary-color)';
                                     headerRow.style.color = 'white';
                                     headerRow.innerHTML = `
-                                        <td colspan="6" style="padding: 0.75rem; font-weight: bold;">
+                                        <td colspan="7" style="padding: 0.75rem; font-weight: bold;">
                                             تحدي ${getGameName(challengeData.game)} - ${getDifficultyName(challengeData.difficulty)} 
                                             (${new Date(challengeData.startDate).toLocaleDateString('en-US')} - ${new Date(challengeData.endDate).toLocaleDateString('en-US')})
                                         </td>
@@ -2229,6 +2237,7 @@ E###R" style="font-family: monospace;"></textarea>
                                         
                                         row.innerHTML = `
                                             <td>${rank === 1 ? '🏆 ' : ''}${rank++}</td>
+                                            <td>${data.employeeId}</td>
                                             <td>${data.employeeName || data.employeeId}</td>
                                             <td>${getGameName(data.game)}</td>
                                             <td>${formatTime(data.time)}</td>
@@ -2239,7 +2248,7 @@ E###R" style="font-family: monospace;"></textarea>
                                     
                                     // Add spacing row
                                     const spacerRow = tbody.insertRow();
-                                    spacerRow.innerHTML = '<td colspan="6" style="height: 10px; background: transparent;"></td>';
+                                    spacerRow.innerHTML = '<td colspan="7" style="height: 10px; background: transparent;"></td>';
                                 }
                             } catch (error) {
                                 console.error('Error getting challenge details:', error);
@@ -2247,7 +2256,7 @@ E###R" style="font-family: monospace;"></textarea>
                         }
                         
                         if (Object.keys(challengeGroups).length === 0) {
-                            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">لا توجد نتائج تحديات</td></tr>';
+                            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">لا توجد نتائج تحديات</td></tr>';
                         }
                     } else {
                         // Normal display for non-challenge views
@@ -2259,6 +2268,7 @@ E###R" style="font-family: monospace;"></textarea>
                             const row = tbody.insertRow();
                             row.innerHTML = `
                                 <td>${rank++}</td>
+                                <td>${data.employeeId}</td>
                                 <td>${data.employeeName || data.employeeId}</td>
                                 <td>${getGameName(data.game || 'تحدي')}</td>
                                 <td>${formatTime(data.time)}</td>
@@ -2642,8 +2652,8 @@ E###R" style="font-family: monospace;"></textarea>
             showLoading(false);
         });
 
-        // Export data
-        async function exportData() {
+        // Export functions
+        async function exportEmployees() {
             showLoading(true);
             
             try {
@@ -2655,25 +2665,257 @@ E###R" style="font-family: monospace;"></textarea>
                 employeesSnapshot.forEach(doc => {
                     const data = doc.data();
                     employees.push({
-                        ID: doc.id,
-                        Name: data.name,
-                        Department: data.department || '',
-                        HasPassword: data.password ? 'Yes' : 'No'
+                        'رقم الموظف': doc.id,
+                        'الاسم': data.name,
+                        'القسم': data.department || '',
+                        'حالة كلمة المرور': data.password ? 'تم التعيين' : 'في انتظار',
+                        'تاريخ الإنشاء': data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('en-US') : '-'
                     });
                 });
                 
                 const ws = XLSX.utils.json_to_sheet(employees);
                 const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, 'Employees');
-                XLSX.writeFile(wb, 'DWE_GameCenter_Export.xlsx');
+                XLSX.utils.book_append_sheet(wb, ws, 'الموظفين');
+                XLSX.writeFile(wb, `DWE_Employees_${new Date().toISOString().split('T')[0]}.xlsx`);
                 
-                showMessage('تم تصدير البيانات بنجاح', 'success');
+                showMessage('تم تصدير بيانات الموظفين بنجاح', 'success');
             } catch (error) {
-                console.error('Error exporting data:', error);
+                console.error('Error exporting employees:', error);
+                showMessage('خطأ في تصدير بيانات الموظفين', 'error');
+            }
+            
+            showLoading(false);
+        }
+
+        async function exportGameResults() {
+            showLoading(true);
+            
+            try {
+                const gameResults = [];
+                const resultsSnapshot = await window.firestore.getDocs(
+                    window.firestore.query(
+                        window.firestore.collection(window.db, 'gameResults'),
+                        window.firestore.orderBy('timestamp', 'desc')
+                    )
+                );
+                
+                resultsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    gameResults.push({
+                        'رقم الموظف': data.employeeId,
+                        'اسم الموظف': data.employeeName || data.employeeId,
+                        'اللعبة': getGameName(data.game),
+                        'الوقت (ثواني)': Math.floor(data.time / 1000),
+                        'الوقت المنسق': formatTime(data.time),
+                        'النتيجة': getResultText(data.result),
+                        'تحدي': data.isChallenge ? 'نعم' : 'لا',
+                        'رقم التحدي': data.challengeId || '',
+                        'التاريخ': data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('en-US') : '-',
+                        'الوقت': data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString('en-US') : '-'
+                    });
+                });
+                
+                const ws = XLSX.utils.json_to_sheet(gameResults);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'نتائج الألعاب');
+                XLSX.writeFile(wb, `DWE_GameResults_${new Date().toISOString().split('T')[0]}.xlsx`);
+                
+                showMessage('تم تصدير نتائج الألعاب بنجاح', 'success');
+            } catch (error) {
+                console.error('Error exporting game results:', error);
+                showMessage('خطأ في تصدير نتائج الألعاب', 'error');
+            }
+            
+            showLoading(false);
+        }
+
+        async function exportChallenges() {
+            showLoading(true);
+            
+            try {
+                const challenges = [];
+                const challengesSnapshot = await window.firestore.getDocs(
+                    window.firestore.query(
+                        window.firestore.collection(window.db, 'challenges'),
+                        window.firestore.orderBy('createdAt', 'desc')
+                    )
+                );
+                
+                for (const doc of challengesSnapshot.docs) {
+                    const data = doc.data();
+                    
+                    // Get participant count
+                    const participantsQuery = window.firestore.query(
+                        window.firestore.collection(window.db, 'gameResults'),
+                        window.firestore.where('challengeId', '==', doc.id)
+                    );
+                    const participantsSnapshot = await window.firestore.getDocs(participantsQuery);
+                    
+                    challenges.push({
+                        'رقم التحدي': doc.id,
+                        'اللعبة': getGameName(data.game),
+                        'مستوى الصعوبة': getDifficultyName(data.difficulty),
+                        'تاريخ البداية': new Date(data.startDate).toLocaleDateString('en-US'),
+                        'تاريخ النهاية': new Date(data.endDate).toLocaleDateString('en-US'),
+                        'الوصف': data.description || '',
+                        'عدد المشاركين': participantsSnapshot.size,
+                        'تاريخ الإنشاء': data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('en-US') : '-',
+                        'أنشئ بواسطة': data.createdBy || ''
+                    });
+                }
+                
+                const ws = XLSX.utils.json_to_sheet(challenges);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'التحديات');
+                XLSX.writeFile(wb, `DWE_Challenges_${new Date().toISOString().split('T')[0]}.xlsx`);
+                
+                showMessage('تم تصدير التحديات بنجاح', 'success');
+            } catch (error) {
+                console.error('Error exporting challenges:', error);
+                showMessage('خطأ في تصدير التحديات', 'error');
+            }
+            
+            showLoading(false);
+        }
+
+        async function exportAllData() {
+            showLoading(true);
+            
+            try {
+                const wb = XLSX.utils.book_new();
+                
+                // Export Employees
+                const employees = [];
+                const employeesSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'employees')
+                );
+                
+                employeesSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    employees.push({
+                        'رقم الموظف': doc.id,
+                        'الاسم': data.name,
+                        'القسم': data.department || '',
+                        'حالة كلمة المرور': data.password ? 'تم التعيين' : 'في انتظار',
+                        'تاريخ الإنشاء': data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('en-US') : '-'
+                    });
+                });
+                
+                const employeesWS = XLSX.utils.json_to_sheet(employees);
+                XLSX.utils.book_append_sheet(wb, employeesWS, 'الموظفين');
+                
+                // Export Game Results
+                const gameResults = [];
+                const resultsSnapshot = await window.firestore.getDocs(
+                    window.firestore.query(
+                        window.firestore.collection(window.db, 'gameResults'),
+                        window.firestore.orderBy('timestamp', 'desc')
+                    )
+                );
+                
+                resultsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    gameResults.push({
+                        'رقم الموظف': data.employeeId,
+                        'اسم الموظف': data.employeeName || data.employeeId,
+                        'اللعبة': getGameName(data.game),
+                        'الوقت (ثواني)': Math.floor(data.time / 1000),
+                        'الوقت المنسق': formatTime(data.time),
+                        'النتيجة': getResultText(data.result),
+                        'تحدي': data.isChallenge ? 'نعم' : 'لا',
+                        'رقم التحدي': data.challengeId || '',
+                        'التاريخ': data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('en-US') : '-'
+                    });
+                });
+                
+                const gameResultsWS = XLSX.utils.json_to_sheet(gameResults);
+                XLSX.utils.book_append_sheet(wb, gameResultsWS, 'نتائج الألعاب');
+                
+                // Export Challenges
+                const challenges = [];
+                const challengesSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'challenges')
+                );
+                
+                for (const doc of challengesSnapshot.docs) {
+                    const data = doc.data();
+                    
+                    // Get participant count
+                    const participantsQuery = window.firestore.query(
+                        window.firestore.collection(window.db, 'gameResults'),
+                        window.firestore.where('challengeId', '==', doc.id)
+                    );
+                    const participantsSnapshot = await window.firestore.getDocs(participantsQuery);
+                    
+                    challenges.push({
+                        'رقم التحدي': doc.id,
+                        'اللعبة': getGameName(data.game),
+                        'مستوى الصعوبة': getDifficultyName(data.difficulty),
+                        'تاريخ البداية': new Date(data.startDate).toLocaleDateString('en-US'),
+                        'تاريخ النهاية': new Date(data.endDate).toLocaleDateString('en-US'),
+                        'الوصف': data.description || '',
+                        'عدد المشاركين': participantsSnapshot.size,
+                        'تاريخ الإنشاء': data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('en-US') : '-'
+                    });
+                }
+                
+                const challengesWS = XLSX.utils.json_to_sheet(challenges);
+                XLSX.utils.book_append_sheet(wb, challengesWS, 'التحديات');
+                
+                // Export Game Words
+                const hangmanWords = [];
+                const hangmanSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'hangmanWords')
+                );
+                
+                hangmanSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    hangmanWords.push({
+                        'الكلمة بالعربية': data.wordAr,
+                        'الكلمة بالإنجليزية': data.wordEn,
+                        'التلميح بالعربية': data.hintAr,
+                        'التلميح بالإنجليزية': data.hintEn
+                    });
+                });
+                
+                if (hangmanWords.length > 0) {
+                    const hangmanWS = XLSX.utils.json_to_sheet(hangmanWords);
+                    XLSX.utils.book_append_sheet(wb, hangmanWS, 'كلمات الرجل المشنوق');
+                }
+                
+                // Export Word Search Words
+                const wordsearchWords = [];
+                const wordsearchSnapshot = await window.firestore.getDocs(
+                    window.firestore.collection(window.db, 'wordsearchWords')
+                );
+                
+                wordsearchSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    wordsearchWords.push({
+                        'الكلمة بالعربية': data.wordAr,
+                        'الكلمة بالإنجليزية': data.wordEn
+                    });
+                });
+                
+                if (wordsearchWords.length > 0) {
+                    const wordsearchWS = XLSX.utils.json_to_sheet(wordsearchWords);
+                    XLSX.utils.book_append_sheet(wb, wordsearchWS, 'كلمات البحث');
+                }
+                
+                XLSX.writeFile(wb, `DWE_CompleteExport_${new Date().toISOString().split('T')[0]}.xlsx`);
+                
+                showMessage('تم تصدير جميع البيانات بنجاح', 'success');
+            } catch (error) {
+                console.error('Error exporting all data:', error);
                 showMessage('خطأ في تصدير البيانات', 'error');
             }
             
             showLoading(false);
+        }
+
+        // Legacy export function - keeping for compatibility
+        async function exportData() {
+            await exportAllData();
         }
 
         async function resetPasswords() {
